@@ -17,10 +17,10 @@
             <h1 class="display-4 fw-bold lh-1 text-body-emphasis m-2"><%=boardgame.getName()%></h1>
             <p class="lead m-4 " ><%= boardgame.getDescription() %></p>
             <hr>
-            <p class="lead m-4 " >Lanzado el <%= boardgame.getDate() %> por <%=boardgame.getBrandId() %> </p>
+            <p class="lead m-4 " >Lanzado el <b><%= boardgame.getDate() %> </b> por <%=boardgame.getBrandId() %> </p>
             <hr>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start ">
-                <button type="button" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold">Editar</button>
+                <% if (role.equals("admin")) { %> <button type="button" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold">Editar</button> <%}%>
                 <button type="button" class="btn btn-outline-secondary btn-lg px-4">Favorito</button>
             </div>
         </div>
