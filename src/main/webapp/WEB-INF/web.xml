@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app>
+    <display-name>Ludoteca Zaragoza</display-name>
+    <context-param>
+        <description>Ruta donde guardar las imagenes</description>
+        <param-name>image-path</param-name>
+        <param-value>pictures</param-value>
+    </context-param>
+</web-app>

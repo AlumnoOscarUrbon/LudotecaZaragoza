@@ -1,0 +1,9 @@
+.card {
+    height: 300px ;
+}
+
+ .modal-header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+ }
