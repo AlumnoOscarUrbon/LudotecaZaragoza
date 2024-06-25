@@ -14,7 +14,7 @@ public class Database {
     public static Handle db;
 
     public static void connect () throws SQLException, ClassNotFoundException{
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName(DRIVER);
         jdbi = Jdbi.create(URL, USERNAME, PASSWORD);
         jdbi.installPlugin(new SqlObjectPlugin());
         db = jdbi.open();

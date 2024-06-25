@@ -1,10 +1,3 @@
-
-<%@ page import="com.svalero.dao.BoardgameDao" %>
-<%@ page import="com.svalero.domain.Boardgame" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.sql.SQLException" %>
-<%@ page import="com.svalero.domain.User" %>
-<%@ page import="com.svalero.dao.UserDao" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="includes/header.jsp"%>

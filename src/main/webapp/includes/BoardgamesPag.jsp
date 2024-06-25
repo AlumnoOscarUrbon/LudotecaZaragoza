@@ -43,8 +43,7 @@
                 }
                 int firstOfRowBoardgame = (actualRowBoardgames * 3) - 3;
 
-                List<Boardgame> boardgames = null;
-                boardgames = Database.jdbi.withExtension(BoardgameDao.class, dao -> dao.getPaginatedBoardgames(firstOfRowBoardgame,3));
+                List<Boardgame> boardgames = Database.jdbi.withExtension(BoardgameDao.class, dao -> dao.getPaginatedBoardgames(firstOfRowBoardgame,3));
                 for (Boardgame boardgame : boardgames){
             %>
             <div class="col">

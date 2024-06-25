@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
-import java.sql.Date;
 
 import com.svalero.domain.Boardgame;
 
