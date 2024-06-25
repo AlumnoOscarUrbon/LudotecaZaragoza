@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="com.svalero.dao.Database" %>
+<%@ page import="java.sql.SQLException" %>
 
 <!DOCTYPE html>
 <html>
@@ -64,13 +65,11 @@
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 d-flex" role="search" id="search-form" method="GET">
-                <input type="text" class="form-control text-white form-control-dark text-bg-dark me-2" placeholder="Buscar..." aria-label="Search" id="search-input">
+                <input type="text" class="form-control text-white form-control-dark text-bg-dark me-2" placeholder="Buscar..." aria-label="Search" name="search" id="search-input">
                 <button type="submit" class="btn btn-outline-light me-2" id="search-button">Buscar</button>
             </form>
 
             <div class="text-end">
-
-
                 <% if (id.equals("0")) { %>
                 <button type="button" class="btn btn-warning  me-2" data-bs-toggle="modal" data-bs-target="#Sign-In-Modal">Login</button>
                 <% } else { %>

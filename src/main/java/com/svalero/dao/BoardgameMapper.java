@@ -17,7 +17,7 @@ public class BoardgameMapper implements RowMapper<Boardgame>{
                 rs.getString("name"),
                 rs.getString("brandId"),
                 rs.getString("description"),
-                rs.getFloat("price"),
+                rs.getDate("date"),
                 rs.getString("picture")
         );
     }

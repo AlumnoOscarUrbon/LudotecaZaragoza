@@ -44,9 +44,14 @@
                     </div>
 
                     <button class="btn btn-primary w-100 py-2 my-3" type="submit">Iniciar sesión</button>
+                    <hr class="my-2">
+                    <small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small>
                 </form>
+                <hr>
                 <div id="result"></div>
             </div>
         </div>
     </div>
 </div>
+
+
