@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static com.svalero.util.Errors.sendError;
+import static com.svalero.util.Messages.sendError;
 
 @WebServlet("/login1")
 public class LoginServlet extends HttpServlet {

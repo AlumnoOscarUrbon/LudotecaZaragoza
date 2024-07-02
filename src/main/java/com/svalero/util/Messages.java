@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-public class Errors {
+public class Messages {
 
     public static void sendError(String message, HttpServletResponse response) throws IOException {
         response.getWriter().println("<div class='alert alert-danger' role='alert'>" +

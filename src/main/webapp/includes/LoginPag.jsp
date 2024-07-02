@@ -11,7 +11,7 @@
                 statusCode: {
                     200: function(response) {
                         if (response === "ok") {
-                            window.location.href = "/LudotecaZaragoza";
+                            location.reload();
                         } else {
                             $("#result").html(response);
                         }

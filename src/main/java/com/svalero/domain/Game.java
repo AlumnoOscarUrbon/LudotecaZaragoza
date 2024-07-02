@@ -10,11 +10,11 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Boardgame {
-    private String boardgameId;
+public class Game {
+    private String gameId;
     private String name;
-    private String brandId;
+    private String categoryId;
     private String description;
-    private Date date;
+    private Date releaseDate;
     private String picture;
 }

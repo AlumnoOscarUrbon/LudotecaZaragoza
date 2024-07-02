@@ -60,20 +60,34 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-lg-0 ">
-                <li><a href="#" class="nav-link px-2 text-white">Juegos de Mesa</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Videojuegos</a></li>
+                <li><a href="view-game.jsp" class="nav-link px-2 text-white">Juegos</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Actividades</a></li>
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 d-flex" role="search" id="search-form" method="GET">
-                <input type="text" class="form-control text-white form-control-dark text-bg-dark me-2" placeholder="Buscar..." aria-label="Search" name="search" id="search-input">
+                <input type="text" class="form-control text-white form-control-dark text-bg-dark me-2" aria-label="Search" name="search" id="search-input"  placeholder="Buscar...">
+                <!--<input type="hidden" name="catIdFilter" value="x"> -->
                 <button type="submit" class="btn btn-outline-light me-2" id="search-button">Buscar</button>
             </form>
 
             <div class="text-end">
                 <% if (id.equals("0")) { %>
-                <button type="button" class="btn btn-warning  me-2" data-bs-toggle="modal" data-bs-target="#Sign-In-Modal">Login</button>
+                    <button type="button" class="btn btn-warning  me-2" data-bs-toggle="modal" data-bs-target="#Sign-In-Modal">Login</button>
                 <% } else { %>
-                <a href="logout"><button type="button" id="OutBtn" class="btn btn-secondary  me-2">Logout</button></a>
+
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Area Personal
+                        </button>
+                        <ul class="dropdown-menu ">
+                            <li><a class="dropdown-item" href="my-user.jsp">Mis datos</a></li>
+                            <% if (role.equals("admin")) { %>
+                                <li><a class="dropdown-item" href="users-list.jsp">Admin. usuarios</a></li>
+                            <% } %>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="logout">Cerrar sesión</a></li>
+                        </ul>
+                    </div>
                 <%}%>
             </div>
         </div>
@@ -83,3 +97,5 @@
 
 
 <%@ include file="LoginPag.jsp"%>
+
+<body>
