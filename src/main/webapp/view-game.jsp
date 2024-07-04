@@ -105,6 +105,25 @@
 
 
 
+
+<div id="custom-cards-games" class="container my-2">
+    <%
+        String search = request.getParameter("search");
+        if (search == null) {search = "";};
+        String gameId = request.getParameter("actualGameId");
+        if (gameId == null) {gameId = "";};
+        List<Game> games;
+
+//FILTRADO BUSQUEDA
+        if (!search.isEmpty()) {
+            String finalSearch = search;
+            games = Database.jdbi.withExtension(GameDao.class, dao -> dao.getFilteredGames(finalSearch));
+        } else if (!gameId.isEmpty()) {
+            String finalGameId = gameId;
+            games = Database.jdbi.withExtension(GameDao.class, dao -> dao.getGameById(finalGameId));
+        } else {
+            games = Database.jdbi.withExtension(GameDao.class, dao -> dao.getAllGames());
+        }
 //FILTRADO POSTERIOR POR CATEGORIA
         List<Game> filtraditos = new ArrayList<>();
 
