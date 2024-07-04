@@ -105,7 +105,6 @@
 
 
 
-
 <div id="custom-cards-games" class="container my-2">
     <%
         String search = request.getParameter("search");
