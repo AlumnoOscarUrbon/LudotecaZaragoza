@@ -17,12 +17,12 @@
     <link href="css/custom.css" rel="stylesheet">
 </head>
 
-<!-- Auto-marcar barra de busqueda -->
-<script>
-    $(document).ready(function(){
-        $("#search-input").focus();
-    });
-</script>
+<%--<!-- Auto-marcar barra de busqueda -->--%>
+<%--<script>--%>
+<%--    $(document).ready(function(){--%>
+<%--        $("#search-input").focus();--%>
+<%--    });--%>
+<%--</script>--%>
 
 
 <%
@@ -65,8 +65,9 @@
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 d-flex" role="search" id="search-form" method="GET">
-                <input type="text" class="form-control text-white form-control-dark text-bg-dark me-2" aria-label="Search" name="search" id="search-input"  placeholder="Buscar...">
-                <!--<input type="hidden" name="catIdFilter" value="x"> -->
+                <input type="text" class="form-control form-control-dark me-2" aria-label="Search" name="search"  id="search-input"
+                    placeholder="<% if (request.getParameter("search") != null && !request.getParameter("search").isEmpty()){ %>&quot;<%= request.getParameter("search") %>&quot;<% }
+                    else { %>Buscar... <% } %>" >
                 <button type="submit" class="btn btn-outline-light me-2" id="search-button">Buscar</button>
             </form>
 

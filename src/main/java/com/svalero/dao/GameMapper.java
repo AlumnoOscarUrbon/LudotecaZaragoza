@@ -14,7 +14,7 @@ public class GameMapper implements RowMapper<Game>{
         return new Game(
                 rs.getString("gameId"),
                 rs.getString("name"),
-                rs.getString("categoryId"),
+                rs.getString("gameCategoryId"),
                 rs.getString("description"),
                 rs.getDate("releaseDate"),
                 rs.getString("picture")

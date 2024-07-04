@@ -8,16 +8,13 @@
             $.ajax("login1", {
                 type: "POST",
                 data: formValue,
-                statusCode: {
-                    200: function(response) {
-                        if (response === "ok") {
-                            location.reload();
-                        } else {
-                            $("#result").html(response);
-                        }
-                    }
+                success: function () {
+                    location.reload();
+                },
+                error: function (xhr) {
+                    $("#result").html(xhr.responseText).show();
                 }
-            });
+            })
         });
     });
 </script>
@@ -53,5 +50,4 @@
         </div>
     </div>
 </div>
-
 

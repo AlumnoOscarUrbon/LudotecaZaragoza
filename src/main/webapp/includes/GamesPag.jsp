@@ -37,8 +37,9 @@
 </script>
 
 <div id="boardgames-content">
-    <div class="container px-4 py-5" id="custom-cards-games">
-        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5" id="card-container">
+    <div class="container"><h2 class="pb-2 border-bottom pt-3 g-4 align-items-stretch">Nuestros Juegos</h2></div>
+    <div class="container px-4 " id="custom-cards-games">
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-4" id="card-container">
 <%
 //comprobar si hay busqueda activa
             String search;
@@ -110,7 +111,7 @@
     </div>
 
     <!-- paginación Boardgames-->
-    <nav aria-label="Page navigation example" id="pagination-games">
+    <nav aria-label="Page navigation example" class="mt-4" id="pagination-games">
         <ul class="pagination justify-content-center">
 
             <li class="page-item
