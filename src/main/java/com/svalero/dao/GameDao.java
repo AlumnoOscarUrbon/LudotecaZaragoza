@@ -48,4 +48,8 @@ public interface GameDao {
     @SqlUpdate ("DELETE FROM Games WHERE GameId = ?")
     void deleteGame (int gameId);
 
+    @SqlQuery("SELECT * FROM Games a JOIN Favorites f ON a.GameId = f.FavoriteId JOIN Users u ON f.UserId = u.UserId WHERE u.UserId=?")
+    @UseRowMapper(GameMapper.class)
+    List<Game> getAllGamesFavoritesByUser(String idUser);
+
 }

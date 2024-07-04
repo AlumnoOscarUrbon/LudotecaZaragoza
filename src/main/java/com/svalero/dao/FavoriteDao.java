@@ -11,4 +11,8 @@ public interface FavoriteDao {
     @SqlQuery("SELECT * FROM Favorites")
     @UseRowMapper(FavoriteMapper.class)
     List<Favorite> getAllGameFavorites();
+
+    @SqlQuery("SELECT * FROM Favorites WHERE UserId = ? AND GameId = ?")
+    @UseRowMapper(FavoriteMapper.class)
+    Favorite getFavoritesFromUserAndGame(String userId, String favoriteId);
 }

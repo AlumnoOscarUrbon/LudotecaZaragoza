@@ -3,6 +3,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="com.svalero.domain.Game" %>
+<%@ page import="com.svalero.dao.FavoriteDao" %>
+<%@ page import="com.svalero.domain.Favorite" %>
 
 <script type="text/javascript">
     // Listener para los clics en los enlaces de paginación
@@ -94,9 +96,14 @@
                                 <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                                     <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"><%= game.getName()%></h3>
                                     <ul class="d-flex list-unstyled mt-auto">
+<%
+                                        Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
+                                        if (favorite != null){
+%>
                                         <li class="me-auto">
-                                            <img src="https://github.com/twbs.png" alt="Icono favorito" width="32" height="32" class="rounded-circle border border-white">
+                                            <img src="icons/favorite-star.png" alt="Icono favorito" width="52" height="52" class=" ">
                                         </li>
+                                        <% } %>
                                     </ul>
                                 </div>
                             </div>
@@ -119,10 +126,10 @@
                 <a class="page-link pag-games" href="index.jsp?actualRowGames=<%=actualRowGames-1%>&search=<%=search%>">Anterior</a>
             </li>
 
-            <%
+<%
                 int totalPages = (int)Math.ceil((double) sizeGames /3);
                 for ( int i = 0 ; i < totalPages; i++){
-            %>
+%>
             <li class="page-item <% if (actualRowGames == i) { %> active <% } %>">
                 <a class="page-link pag-games" href="index.jsp?actualRowGames=<%=i%>&search=<%=search%>"><%=i+1%></a>
             </li>

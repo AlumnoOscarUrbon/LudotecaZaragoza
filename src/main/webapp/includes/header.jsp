@@ -35,18 +35,18 @@
 
 //  DIFERENCIAR AL USUARIO
     HttpSession currentSession = request.getSession();
-    String id;
-    String userName;
-    String role;
+    String actualUserId;
+    String actualUserName;
+    String actualUserRole;
 
     if (currentSession.getAttribute("id") != null) {
-        id = currentSession.getAttribute("id").toString();
-        userName= currentSession.getAttribute("username").toString();
-        role= currentSession.getAttribute("role").toString();
+        actualUserId = currentSession.getAttribute("id").toString();
+        actualUserName= currentSession.getAttribute("username").toString();
+        actualUserRole= currentSession.getAttribute("role").toString();
     } else {
-        id = "0";
-        userName = "anonymous";
-        role = "anonymous";
+        actualUserId = "0";
+        actualUserName = "anonymous";
+        actualUserRole = "anonymous";
     }
 %>
 
@@ -72,7 +72,7 @@
             </form>
 
             <div class="text-end">
-                <% if (id.equals("0")) { %>
+                <% if (actualUserId.equals("0")) { %>
                     <button type="button" class="btn btn-warning  me-2" data-bs-toggle="modal" data-bs-target="#Sign-In-Modal">Login</button>
                 <% } else { %>
 
@@ -82,7 +82,7 @@
                         </button>
                         <ul class="dropdown-menu ">
                             <li><a class="dropdown-item" href="my-user.jsp">Mis datos</a></li>
-                            <% if (role.equals("admin")) { %>
+                            <% if (actualUserRole.equals("admin")) { %>
                                 <li><a class="dropdown-item" href="users-list.jsp">Admin. usuarios</a></li>
                             <% } %>
                             <li><hr class="dropdown-divider"></li>

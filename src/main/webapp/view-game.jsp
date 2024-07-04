@@ -92,7 +92,7 @@
         </div>
     </form>
 
-    <% if (role.equals("admin")) { %>
+    <% if (actualUserRole.equals("admin")) { %>
     <div class="row justify-content-center mt-4">
         <div class="col-12 col-lg-6 text-center">
             <a href="edit-game.jsp" class="w-100">
@@ -158,7 +158,7 @@
                 <p class="lead m-4">Este <b> <%= gameCategoryObject.getName() %></b> fue lanzado el <b><%= gameRelease %> </b></p>
                 <hr>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start" id="buttons">
-                    <% if (role.equals("admin")) { %>
+                    <% if (actualUserName.equals("admin")) { %>
                     <a href="edit-game.jsp?actualGameId=<%= game.getGameId() %>">
                         <button type="button" class="btn btn-primary btn-lg px-4 w-100 w-md-auto fw-bold">Editar</button>
                     </a>
