@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import org.apache.commons.lang3.time.DateUtils;
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 
 import java.sql.Date;
 import java.io.File;
@@ -19,8 +20,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.svalero.util.Messages.sendError;
 import static com.svalero.util.Messages.sendMessage;
@@ -30,18 +34,18 @@ import static com.svalero.util.Messages.sendMessage;
 public class EditGameServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
         try {
+            if (validate(request, response)) {
                 String gameId = request.getParameter("gameId");
                 String gameName = request.getParameter("gameName");
-                int gameCategory = Integer.parseInt(request.getParameter("gameCategory"));
+                int gameCategoryId = Integer.parseInt(request.getParameter("gameCategoryId"));
                 String gameDescription = request.getParameter("gameDescription");
                 Date gameRelease = Utils.parseDate(request.getParameter("gameRelease"));
                 Part picturePart = request.getPart("gamePicture");
 
-            // NOMBRAR Y GUARDAR IMAGENES EN CARPETA DENTRO DE TOMCAT
                 String imagePath = request.getServletContext().getInitParameter("image-path");
                 String absolutePath = getServletContext().getRealPath("/") + imagePath;
                 String fileName = null;
@@ -55,26 +59,48 @@ public class EditGameServlet extends HttpServlet {
                 final String finalFileName = fileName;
 
                 Database.connect();
+                if (gameId.equals("noId")) {
+                    Database.jdbi.withExtension(GameDao.class, dao -> dao.registerGame(gameName, gameCategoryId, gameDescription, gameRelease, finalFileName));
+                    sendMessage("Registro satisfactorio", response);
 
-               Database.jdbi.withExtension(GameDao.class, dao -> dao.registerGame(gameName, gameCategory, gameDescription, gameRelease, finalFileName, gameId ));
-            sendMessage("Registro satisfactorio", response);
-
-//                if (!gameId.equals("0")){
-//                    sendMessage("Registro satisfactorio", response);
-//                }
-
-
-        } catch(
-        SQLException sqle){
+                } else {
+                    Database.jdbi.withExtension(GameDao.class, dao -> dao.updateGame(gameName, gameCategoryId, gameDescription, gameRelease, finalFileName, gameId));
+                    sendMessage("Actualización satisfactoria", response);
+                }
+            }
+        } catch (UnableToExecuteStatementException e){
+            e.printStackTrace();
+            sendError("Ya existe un juego con el mismo nombre.", response);
+        } catch (SQLException sqle){
             sqle.printStackTrace();
             sendError("Error conectando a la base de datos", response);
         } catch(ClassNotFoundException cnfe){
             cnfe.printStackTrace();
+            sendError("Error: clase no encontrada", response);
+        } catch (ServletException | ParseException e) {
+            e.printStackTrace();
             sendError("Error interno del servidor", response);
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
         }
     }
+
+    private boolean validate (HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        boolean hasErrors = true;
+
+        if (request.getParameter("gameName").isBlank()) {
+            sendError("Debe ingresar un nombre",response);
+            hasErrors=false;
+        }
+        if (request.getParameter("gameCategoryId") == null) {
+            sendError("Debe ingresar una categoria",response);
+            hasErrors=false;
+        }
+        try {
+            Utils.parseDate(request.getParameter("gameRelease"));
+        } catch (ParseException pe) {
+            sendError("Formato de la fecha incorrecto", response);
+            hasErrors=false;
+        }
+        return hasErrors;
+    }
+
 }

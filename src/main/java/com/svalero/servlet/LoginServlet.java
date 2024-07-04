@@ -14,12 +14,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import static com.svalero.util.Messages.sendError;
+import static com.svalero.util.Messages.sendMessage;
 
 @WebServlet("/login1")
 public class LoginServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
 
@@ -32,21 +33,16 @@ public class LoginServlet extends HttpServlet {
 
             if (user != null) {
 
-//                response.getWriter().println("<div class ='alert alert-success' role='alert'> Hola " + user.getName() + ", tu rol es el de : " +
-//                        user.getRole() + "</div>");
-
                 HttpSession session = request.getSession();
 
                 session.setAttribute("username", user.getUsername());
                 session.setAttribute("role", user.getRole());
                 session.setAttribute("id", user.getUserId());
 
+                sendMessage("login correcto.",response);
 
-
-
-               response.getWriter().print("ok");
             } else {
-                sendError("usuario no existe", response);
+                sendError("Login incorrecto.", response);
             }
 
         } catch (SQLException e) {
@@ -56,8 +52,10 @@ public class LoginServlet extends HttpServlet {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             sendError("excepcion en tiempo de ejecucion", response);
+
         } catch (NullPointerException e){
             e.printStackTrace();
+            sendError("excepcion de campo inexistente", response);
         }
     }
 }

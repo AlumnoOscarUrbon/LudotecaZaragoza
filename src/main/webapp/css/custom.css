@@ -7,3 +7,22 @@
      justify-content: space-between;
      align-items: center;
  }
+.nowrap {
+    white-space: nowrap;
+}
+
+.backgroundcolor1 {
+    background-color: #f8f8ff !important;
+}
+
+.backgroundcolor2 {
+    background-color: #fff8f8 !important;
+}
+
+.backgroundcolor3 {
+    background-color: #f8fff8 !important;
+}
+
+.backgroundcolor4 {
+    background-color: #fcfaf9 !important;
+}
