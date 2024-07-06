@@ -3,9 +3,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.svalero.domain.GameCategory" %>
 <%@ page import="com.svalero.dao.GameCategoryDao" %>
-<%@ page import="com.svalero.servlet.EditGameServlet" %>
-<%@ page import="java.util.logging.Logger" %>
-<%@ page import="java.util.logging.Level" %>
 <%@ include file="includes/header.jsp"%>
 
 <script type="text/javascript">

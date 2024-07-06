@@ -17,12 +17,12 @@
     <link href="css/custom.css" rel="stylesheet">
 </head>
 
-<%--<!-- Auto-marcar barra de busqueda -->--%>
-<%--<script>--%>
-<%--    $(document).ready(function(){--%>
-<%--        $("#search-input").focus();--%>
-<%--    });--%>
-<%--</script>--%>
+<!-- Auto-marcar barra de busqueda -->
+<script>
+    $(document).ready(function(){
+        $("#search-input").focus();
+    });
+</script>
 
 
 <%

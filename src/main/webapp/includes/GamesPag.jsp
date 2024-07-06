@@ -1,10 +1,12 @@
 <%@ page import="com.svalero.dao.GameDao" %>
 <%@ page import="com.svalero.domain.Game" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.Arrays" %>
 <%@ page import="com.svalero.domain.Game" %>
 <%@ page import="com.svalero.dao.FavoriteDao" %>
 <%@ page import="com.svalero.domain.Favorite" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+
+<link href="css/custom.css" rel="stylesheet">
 
 <script type="text/javascript">
     // Listener para los clics en los enlaces de paginación
@@ -90,27 +92,26 @@
             } else {
                 for (Game game : packagedGames){
 %>
-                    <div class="col">
-                        <a href="view-game.jsp?actualGameId=<%= game.getGameId() %>&catIdFilter=noFilter" class="text-decoration-none">
-                            <div class="card card-cover overflow-hidden text-bg-dark rounded-4 shadow-lg" id="tarjetas" style="background-image: url('pictures/<%= game.getPicture() %>');">
-                                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                                    <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"><%= game.getName()%></h3>
-                                    <ul class="d-flex list-unstyled mt-auto">
-<%
-                                        Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
-                                        if (favorite != null){
-%>
-                                        <li class="me-auto">
-                                            <img src="icons/favorite-star.png" alt="Icono favorito" width="52" height="52" class=" ">
-                                        </li>
-                                        <% } %>
-                                    </ul>
-                                </div>
-                            </div>
-                        </a>
+            <div class="col">
+                <a href="view-game.jsp?actualGameId=<%= game.getGameId() %>&catIdFilter=noFilter" class="text-decoration-none">
+                    <div class="card card-cover overflow-hidden text-bg-dark rounded-4 shadow-lg center&cover-bg position-relative" id="tarjetas" style="background-image: url('pictures/<%= game.getPicture() %>');">
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"><%= game.getName()%></h3>
+                            <ul class="d-flex list-unstyled mt-auto">
+                                <%
+                                    Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
+                                    if (favorite != null){
+                                %>
+                                <img src="icons/favorite-star.png" alt="Icono favorito" class="size-star-icon position-absolute corner-bottom-right">
+                                <% } %>
+                            </ul>
+                        </div>
                     </div>
+                </a>
+            </div>
 
-<%
+
+            <%
                 }
             }
 %>

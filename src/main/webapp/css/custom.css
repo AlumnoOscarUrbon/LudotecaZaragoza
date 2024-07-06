@@ -26,3 +26,48 @@
 .backgroundcolor4 {
     background-color: #fcfaf9 !important;
 }
+
+.flex1 {
+    flex:1;
+}
+
+.lineasmax4{
+    max-height: 6em;
+    overflow: auto;
+}
+
+.object-fit-cover{
+    object-fit:cover;
+}
+.h350{
+    height:350px;
+}
+
+@media screen and (max-width:767px){
+    .h350{
+        height: 230px ;
+    }
+}
+.fine-border {
+    border: 1px solid rgba(99, 99, 99, 0.46);
+}
+.center\&cover-bg{
+    background-size: cover;
+    background-position: center;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+.corner-bottom-right{
+    bottom: 20px;
+    right: 22px;
+}
+.size-star-icon {
+    width: 52px;
+    height: 52px;
+}
