@@ -2,7 +2,6 @@ package com.svalero.servlet;
 
 import com.svalero.dao.Database;
 import com.svalero.dao.FavoriteDao;
-import com.svalero.dao.GameDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,8 +13,8 @@ import java.sql.SQLException;
 
 import static com.svalero.util.Messages.sendMessage;
 
-@WebServlet("/add-favorite")
-public class AddFavoriteServlet extends HttpServlet {
+@WebServlet("/delete-favorite")
+public class DeleteFavoriteServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,7 +29,7 @@ public class AddFavoriteServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.addFavorite(actualUserId, gameId));
+        Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(actualUserId, gameId));
         sendMessage("conseguido", response);
 
     }

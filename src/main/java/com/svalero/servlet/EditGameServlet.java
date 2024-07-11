@@ -2,6 +2,8 @@ package com.svalero.servlet;
 
 import com.svalero.dao.Database;
 import com.svalero.dao.GameDao;
+import com.svalero.dao.UserDao;
+import com.svalero.domain.Game;
 import com.svalero.util.Utils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -22,6 +24,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,7 +73,7 @@ public class EditGameServlet extends HttpServlet {
             }
         } catch (UnableToExecuteStatementException e){
             e.printStackTrace();
-            sendError("Ya existe un juego con el mismo nombre.", response);
+            sendError("Error de ejecución en la BBDD.", response);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             sendError("Error conectando a la base de datos", response);
@@ -90,6 +93,7 @@ public class EditGameServlet extends HttpServlet {
             sendError("Debe ingresar un nombre",response);
             hasErrors=false;
         }
+
         if (request.getParameter("gameCategoryId") == null) {
             sendError("Debe ingresar una categoria",response);
             hasErrors=false;

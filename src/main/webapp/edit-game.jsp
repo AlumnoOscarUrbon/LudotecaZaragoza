@@ -4,6 +4,7 @@
 <%@ page import="com.svalero.domain.GameCategory" %>
 <%@ page import="com.svalero.dao.GameCategoryDao" %>
 <%@ include file="includes/header.jsp"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -83,12 +84,12 @@
             <div class="col-md-4">
                 <label for="date" class="form-label">Fecha de lanzamiento</label>
                 <input type="date" name = "gameRelease" class="form-control" id="date" placeholder="dd/mm/yyyy"
-                    <% if (!gameId.equals("noId")){%> value="<%= game.getReleaseDate() %>"<% } %> required>
+                    <% if (!gameId.equals("noId")){%> value="<%= game.getReleaseDate() %>"<% } %> >
             </div>
 
             <div class="col-md-4">
                 <label for="category" class="form-label">Categoria</label>
-                <select class="form-select" name ="gameCategoryId" id="category" required>
+                <select class="form-select" name ="gameCategoryId" id="category" >
                         <option disabled <% if (gameId.equals("noId")){ %> selected <% } %> >Selecciona</option>
     <%
                             List < GameCategory> categories = Database.jdbi.withExtension(GameCategoryDao.class, dao -> dao.getAllGameCategories());
@@ -108,7 +109,7 @@
                 <input type="file" name="gamePicture" class="form-control" id="picture">
             </div>
             <input type="hidden" name="gameId" value="<%=gameId%>"/>
-            <div class="col-12 d-flex justify-content-end mb-2 mt-4">
+            <div class="col-12 d-flex justify-content-end mb-3 mt-4">
                 <button class="btn btn-primary w-25 py-3 " type="submit" id="edit-button">
                     <% if (gameId.equals("noId")){ %> REGISTRAR <% } else { %> ACTUALIZAR <% } %>
                 </button>

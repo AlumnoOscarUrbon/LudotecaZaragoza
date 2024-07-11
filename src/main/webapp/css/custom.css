@@ -71,3 +71,28 @@
     width: 52px;
     height: 52px;
 }
+.boton-activo:hover,
+.boton-activo:active,
+.boton-activo:focus,
+.boton-activo {
+    background-color: #ffd92b;
+    border-color: #af8e00;
+}
+
+.boton-desactivado:hover,
+.boton-desactivado:active,
+.boton-desactivado:focus,
+.boton-desactivado {
+    background-color: #eaeaea;
+    border-color: #afafaf;
+}
+
+/*.button-favorite {*/
+/*    border: 1px solid #bcbcbc; !* Borde negro de 1 píxel *!*/
+
+
+
+.logo-size {
+    height : 100px;
+    width: 264px;
+}

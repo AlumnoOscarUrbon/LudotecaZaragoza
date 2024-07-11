@@ -12,7 +12,10 @@
                     location.reload();
                 },
                 error: function (xhr) {
-                    $("#result").html(xhr.responseText).show();
+                    $("#result-login").html(xhr.responseText).show();
+                    setTimeout(function () {
+                        $("#result-login").slideUp();
+                    }, 2500);
                 }
             })
         });
@@ -42,10 +45,11 @@
 
                     <button class="btn btn-primary w-100 py-2 my-3" type="submit">Iniciar sesión</button>
                     <hr class="my-2">
-                    <small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small>
+                    <small class="text-body-secondary"> Si no tienes cuenta <a href="view-user.jsp">registrate aquí.</a> </small>
+
                 </form>
                 <hr>
-                <div id="result"></div>
+                <div id="result-login"></div>
             </div>
         </div>
     </div>

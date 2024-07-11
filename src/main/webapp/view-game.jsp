@@ -12,10 +12,10 @@
 <%@ include file="includes/header.jsp"%>
 
 <link href="css/custom.css" rel="stylesheet">
+
 <!-- Desplegable Seleccion de categoria-->
 <script type="text/javascript">
     $(document).ready(function() {
-        $(document).ready(function() {
             $(".form-select").on('change', function() {
                 var selectedCatValue = $(this).val();
                 var actualUrl = window.location.href.split('?')[0];
@@ -24,7 +24,6 @@
                 var newUrl = actualUrl + '?catIdFilter=' + selectedCatValue + '&search=' + encodeURIComponent(searchValue);
                 window.location.href = newUrl;
             });
-        });
     });
 </script>
 
@@ -66,49 +65,87 @@
     });
 </script>
 
+<!-- Boton favorito y aparicion de estrella -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".button-favorite").on("click", function(event) {
+            var buttonFavorite = $(this);
+            var gameId = buttonFavorite.data('gameid');
+            var actualUserId = buttonFavorite.data('actualuserid');
+            var favoriteIcon = $("#fav-icon-" + gameId);
+
+            if (buttonFavorite.hasClass('boton-activo')) {
+                $.ajax({
+                    type: "POST",
+                    url: "delete-favorite",
+                    data: { gameId: gameId, actualUserId: actualUserId },
+                    success: function(response) {
+                        console.log('Se ha eliminado de favoritos correctamente');
+                        buttonFavorite.removeClass('boton-activo').addClass('boton-desactivado');
+                        favoriteIcon.fadeOut();
+                    },
+                    error: function() {
+                        console.error('Error al eliminar de favoritos.');
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "add-favorite",
+                    data: { gameId: gameId, actualUserId: actualUserId },
+                    success: function(response) {
+                        console.log('Se ha añadido a favoritos correctamente');
+                        buttonFavorite.removeClass('boton-desactivado').addClass('boton-activo');
+                        favoriteIcon.fadeIn();
+                    },
+                    error: function() {
+                        console.error('Error al añadir a favoritos.');
+                    }
+                });
+            }
+        });
+    });
+</script>
 <%
     String catIdFilterParam = request.getParameter("catIdFilter");
     if (catIdFilterParam == null) {catIdFilterParam = "";};
 %>
-<div class="container align-items-center">
-    <form class="row gx-3 align-items-start align-items-center">
-        <div class="col-12 col-md-9">
-            <select class="form-select w-100 mt-4 " id="floatingSelect" aria-label="Floating label select example">
-                <option disabled selected >Selecciona una categoría</option>
-                <option value="" <% if (catIdFilterParam.isEmpty()) { %> selected <% } %>>Todos los juegos</option>
-                <%
-                    List < GameCategory> gameCategories = Database.jdbi.withExtension(GameCategoryDao.class, dao -> dao.getAllGameCategories());
-                    for (GameCategory gameCategory : gameCategories) {
-                %>
-                <option class=" backgroundcolor<%=gameCategory.getGameCategoryId()%> " value="<%=gameCategory.getGameCategoryId()%>"
-                        <% if (catIdFilterParam.equals(gameCategory.getGameCategoryId())) { %>
-                        selected
-                        <% } %>
-                > Solo <%= gameCategory.getName() %>
-                </option>
 
+<div class="container my-4">
+    <div class="row align-items-center justify-content-center ">
+
+        <form class="col">
+            <select class="form-select" id="floatingSelect" aria-label="Floating label select">
+                <option disabled selected>Selecciona una categoría</option>
+                <option value="" <% if (catIdFilterParam.isEmpty()) { %> selected <% } %>>Todos los juegos</option>
+<%
+                List<GameCategory> gameCategories = Database.jdbi.withExtension(GameCategoryDao.class, dao -> dao.getAllGameCategories());
+                for (GameCategory gameCategory : gameCategories) {
+%>
+                    <option class="backgroundcolor<%=gameCategory.getGameCategoryId()%>" value="<%=gameCategory.getGameCategoryId()%>"
+                        <% if (catIdFilterParam.equals(gameCategory.getGameCategoryId())) { %> selected <% } %>
+                        > Solo <%= gameCategory.getName() %>
+                    </option>
                 <% } %>
             </select>
-        </div>
-        <div class="col-12 col-md-3 d-grid">
-            <button id="resetSearch" type="button" class="btn btn-warning w-100 mt-4" >Eliminar búsqueda en curso</button>
-        </div>
-    </form>
+        </form>
 
-    <% if (actualUserRole.equals("admin")) { %>
-    <div class="row justify-content-center mt-4">
-        <div class="col-12 col-lg-6 text-center">
-            <a href="edit-game.jsp" class="w-100">
-                <button type="button" class="btn btn-success btn-lg py-3 px-4 rounded-3">AÑADIR NUEVO JUEGO</button>
+        <div class="col-3 mb-2 mb-md-0">
+            <button id="resetSearch" type="button" class="btn btn-warning w-100">Eliminar búsqueda en curso</button>
+        </div>
+
+        <% if (actualUserRole.equals("admin")) { %>
+        <div class="col-12 col-md-3 ">
+            <a href="edit-game.jsp" class="text-decoration-none">
+                <button type="button" class="btn btn-success w-100">AÑADIR JUEGO</button>
             </a>
         </div>
+        <% } %>
+
     </div>
-    <% } %>
 </div>
 
 
-
-<div id="custom-cards-games" class="container my-2">
     <%
         String search = request.getParameter("search");
         if (search == null) {search = "";};
@@ -142,26 +179,26 @@
 
         if (filtraditos.isEmpty()) {
     %>
-    <div class="container my-4"> Sin resultados. </div>
+    <div class="container my-4 "> Sin resultados. </div>
     <%
     } else {
         for (Game game : filtraditos) {
     %>
-    <div class="container my-5" id="tarjeta<%= game.getGameId() %>">
-        <div class="d-flex flex-lg-row flex-column p-4 align-items-center rounded-3 border shadow-lg backgroundcolor<%= game.getGameCategoryId() %> " >
-            <div class=" p-3 p-lg-4 d-flex flex-column flex1" >
+    <div class=" container  w-100 mb-4 " id="tarjeta<%= game.getGameId() %>">
+        <div class="d-flex flex-lg-row flex-column p-4 align-items-center rounded-3 border shadow-lg backgroundcolor<%= game.getGameCategoryId() %>">
+            <div class="p-3 p-lg-4 d-flex flex-column flex1">
                 <h1 class="display-5 fw-bold lh-0 text-body-emphasis m-0 p-0" id="titulo"><%= game.getName() %></h1>
-                <p class="lead m-3 lineasmax4" ><%= game.getDescription() %></p>
+                <p class="lead m-3 lineasmax4"><%= game.getDescription() %></p>
                 <hr>
                 <%
                     String gameRelease = Utils.formatDate(game.getReleaseDate());
                     String gameCategoryId = game.getGameCategoryId();
                     GameCategory gameCategoryObject = Database.jdbi.withExtension(GameCategoryDao.class, dao -> dao.getGameCategoryById(gameCategoryId));
                 %>
-                <p class="lead m-2">Este <b><%= gameCategoryObject.getName() %></b> fue lanzado el <b><%= gameRelease %></b></p>
+                <p class="lead my-2 mx-3">Este <b><%= gameCategoryObject.getName() %></b> fue lanzado el <b><%= gameRelease %></b></p>
                 <hr>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-auto" id="buttons">
-                    <% if (actualUserName.equals("admin")) { %>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-auto" >
+                    <% if (actualUserRole.equals("admin")) { %>
                     <a href="edit-game.jsp?actualGameId=<%= game.getGameId() %>">
                         <button type="button" class="btn btn-primary btn-lg px-4 w-100 w-md-auto fw-bold">Editar</button>
                     </a>
@@ -170,18 +207,28 @@
                         <button type="submit" class="btn btn-primary btn-lg px-4 w-100 w-md-auto fw-bold">Eliminar</button>
                     </form>
                     <% } %>
-                    <button type="button" class="btn btn-outline-secondary btn-lg px-4 w-100 w-md-auto">Favorito</button>
+                    <button type="button" class="btn button-favorite btn-lg px-4 w-100 w-md-auto
+                        <%
+                            Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
+                            if (favorite != null){
+                        %>
+                                boton-activo
+                            <% } else { %>
+                                boton-desactivado
+                            <% } %>
+                    " data-gameid="<%= game.getGameId() %>" data-actualuserid="<%= actualUserId %>"
+                            <% if (actualUserId.equals("noId")){ %>
+                                disabled > Favorito (Solo usuarios registrados)
+                            <% } else { %>
+                                > Favorito
+                            <% } %>
+                    </button>
                 </div>
             </div>
-            <div class=" d-flex py-0 px-3 m-0 align-items-center overflow-hidden flex1 w-100 h-100" >
+            <div class="d-flex py-0 px-3 m-0 align-items-center overflow-hidden flex1 w-100 h-100">
                 <div class="position-relative w-100 h-100">
-                    <img class=" rounded rounded-4 object-fit-cover h350 w-100 fine-border " id= "tal" src="pictures/<%= game.getPicture() %>"  alt="">
-                    <%
-                        Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
-                        if (favorite != null){
-                    %>
-                        <img src="icons/favorite-star.png" alt="Icono favorito" class="size-star-icon position-absolute corner-bottom-right">
-                    <% } %>
+                    <img class="rounded rounded-4 object-fit-cover h350 w-100 fine-border" src="pictures/<%= game.getPicture() %>" alt="">
+                    <img src="icons/favorite-star.png" id="fav-icon-<%= game.getGameId() %>" alt="Icono favorito" class="size-star-icon position-absolute corner-bottom-right" <% if (favorite == null){ %> style="display:none;" <% } %>>
                 </div>
             </div>
         </div>
@@ -190,5 +237,6 @@
             }
         }
     %>
-</div>
+
 <%@ include file="includes/footer.jsp"%>
+

@@ -11,11 +11,11 @@ import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 
 public interface GameDao {
-    @SqlQuery("SELECT * FROM Games")
+    @SqlQuery("SELECT * FROM Games ORDER BY Name")
     @UseRowMapper(GameMapper.class)
     List<Game> getAllGames();
 
-    @SqlQuery("SELECT * FROM Games LIMIT ?, ?")
+    @SqlQuery("SELECT * FROM Games LIMIT ?, ? ORDER BY Name")
     @UseRowMapper(GameMapper.class)
     List<Game> getPaginatedGames(int primerResultado, int numeroResultados);
 
@@ -23,8 +23,13 @@ public interface GameDao {
     @UseRowMapper(GameMapper.class)
     List <Game> getGameById(String gameId);
 
+    @SqlQuery("SELECT * FROM Games WHERE Name = ?")
+    @UseRowMapper(GameMapper.class)
+    List <Game> getGameByName(String gameName);
+
+
     @SqlQuery("SELECT * FROM Games WHERE Name LIKE CONCAT('%',:searchTerm,'%') " +
-            "OR Description LIKE CONCAT('%',:searchTerm,'%')")
+            "OR Description LIKE CONCAT('%',:searchTerm,'%') ORDER BY Name")
     @UseRowMapper(GameMapper.class)
     List<Game> getFilteredGames(@Bind("searchTerm")String searchTerm);
 

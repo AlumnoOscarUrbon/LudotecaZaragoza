@@ -1,8 +1,8 @@
 package com.svalero.servlet;
 
 import com.svalero.dao.Database;
-import com.svalero.dao.FavoriteDao;
 import com.svalero.dao.GameDao;
+import com.svalero.dao.UserDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,24 +14,21 @@ import java.sql.SQLException;
 
 import static com.svalero.util.Messages.sendMessage;
 
-@WebServlet("/add-favorite")
-public class AddFavoriteServlet extends HttpServlet {
+
+@WebServlet("/delete-user")
+public class DeleteUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        String gameId = request.getParameter("gameId");
-        String actualUserId = request.getParameter("actualUserId");
-
+        int userId = Integer.parseInt(request.getParameter("userId"));
         try {
             Database.connect();
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.addFavorite(actualUserId, gameId));
-        sendMessage("conseguido", response);
-
-    }
-}
+        Database.jdbi.useExtension(UserDao.class, dao -> dao.deleteUserWithDependencies(userId));
+        sendMessage("borrado", response);
+    }}

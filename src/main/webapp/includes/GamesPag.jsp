@@ -40,10 +40,10 @@
     }
 </script>
 
-<div id="boardgames-content">
-    <div class="container"><h2 class="pb-2 border-bottom pt-3 g-4 align-items-stretch">Nuestros Juegos</h2></div>
-    <div class="container px-4 " id="custom-cards-games">
-        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-4" id="card-container">
+<div class="container">
+    <div class="container"><h2 class="border-bottom mt-4 mb-2 pb-2">Nuestros Juegos</h2></div>
+    <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-4 " id="custom-cards-games">
+
 <%
 //comprobar si hay busqueda activa
             String search;
@@ -87,7 +87,7 @@
 
             if (packagedGames.isEmpty()) {
 %>
-                <div class="container my-2"> Sin resultados. Prueba con otra búsqueda. </div>
+        <div class="container my-2 text-center"> <p>Sin resultados.</p> </div>
 <%
             } else {
                 for (Game game : packagedGames){
@@ -97,28 +97,23 @@
                     <div class="card card-cover overflow-hidden text-bg-dark rounded-4 shadow-lg center&cover-bg position-relative" id="tarjetas" style="background-image: url('pictures/<%= game.getPicture() %>');">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                             <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"><%= game.getName()%></h3>
-                            <ul class="d-flex list-unstyled mt-auto">
                                 <%
                                     Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
                                     if (favorite != null){
                                 %>
                                 <img src="icons/favorite-star.png" alt="Icono favorito" class="size-star-icon position-absolute corner-bottom-right">
                                 <% } %>
-                            </ul>
                         </div>
                     </div>
                 </a>
             </div>
-
-
-            <%
+<%
                 }
             }
 %>
-        </div>
     </div>
 
-    <!-- paginación Boardgames-->
+    <!-- paginación de juegos-->
     <nav aria-label="Page navigation example" class="mt-4" id="pagination-games">
         <ul class="pagination justify-content-center">
 
