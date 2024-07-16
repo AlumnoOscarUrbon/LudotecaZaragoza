@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class GameCategory {
-    private String gameCategoryId;
+public class ActivityCategory {
+    private String activityCategoryId;
     private String name;
 }

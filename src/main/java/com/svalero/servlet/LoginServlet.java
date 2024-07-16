@@ -40,10 +40,10 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("id", user.getUserId());
 
                 sendMessage("login correcto.",response);
-
             } else {
                 sendError("Login incorrecto.", response);
             }
+            Database.close();
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static com.svalero.util.Messages.sendError;
 import static com.svalero.util.Messages.sendMessage;
 
 @WebServlet("/delete-favorite")
@@ -22,15 +23,21 @@ public class DeleteFavoriteServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         String gameId = request.getParameter("gameId");
         String actualUserId = request.getParameter("actualUserId");
-
+        String favoriteId = request.getParameter("favoriteId");
         try {
             Database.connect();
+            if (favoriteId != null ) {
+                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByFavId(favoriteId));
+            } else {
+                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(actualUserId, gameId));
+            }
+            sendMessage("Borrado completado: favorito", response);
+            Database.close();
+
         } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            sendError("Error en la BBDD.", response);
             throw new RuntimeException(e);
         }
-
-        Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(actualUserId, gameId));
-        sendMessage("conseguido", response);
-
     }
 }

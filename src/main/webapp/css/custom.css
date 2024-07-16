@@ -1,5 +1,6 @@
 .card {
     height: 300px ;
+    border: 0;
 }
 
  .modal-header {
@@ -49,7 +50,11 @@
     }
 }
 .fine-border {
-    border: 1px solid rgba(99, 99, 99, 0.46);
+    border: 1px solid rgb(193, 193, 193);
+}
+
+.fine-border-light{
+    border: 1px solid rgb(230, 230, 230);
 }
 .center\&cover-bg{
     background-size: cover;
@@ -87,12 +92,36 @@
     border-color: #afafaf;
 }
 
-/*.button-favorite {*/
-/*    border: 1px solid #bcbcbc; !* Borde negro de 1 píxel *!*/
-
-
-
 .logo-size {
     height : 100px;
     width: 264px;
+}
+
+
+p{
+    margin:0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+
+
+body {
+
+    background-size: contain;
+    background: linear-gradient(rgb(255, 253, 253), rgb(255, 241, 235)) no-repeat fixed bottom;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.border-dark-gray {
+    border-color: #c5c5c5 ;
+}
+
+.pagination {
+
 }

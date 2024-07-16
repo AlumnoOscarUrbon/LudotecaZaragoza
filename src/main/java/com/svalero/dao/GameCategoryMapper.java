@@ -14,8 +14,7 @@ public class GameCategoryMapper implements RowMapper<GameCategory> {
     public GameCategory map(ResultSet rs, StatementContext ctx) throws SQLException {
         return new GameCategory(
                 rs.getString("gameCategoryId"),
-                rs.getString("name"),
-                rs.getString("description")
+                rs.getString("name")
         );
     }
 }

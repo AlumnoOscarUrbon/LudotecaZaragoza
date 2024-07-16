@@ -18,9 +18,11 @@ public class Database {
         jdbi = Jdbi.create(URL, USERNAME, PASSWORD);
         jdbi.installPlugin(new SqlObjectPlugin());
         db = jdbi.open();
+        System.out.println("Conexion abierta");
     }
 
     public static void close() throws SQLException{
         db.close();
+        System.out.println("Conexion cerrada");
     }
 }

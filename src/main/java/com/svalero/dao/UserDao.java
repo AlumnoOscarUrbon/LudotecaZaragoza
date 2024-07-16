@@ -1,5 +1,6 @@
 package com.svalero.dao;
 
+import com.svalero.domain.Game;
 import com.svalero.domain.User;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -38,11 +39,11 @@ public interface UserDao {
     @SqlUpdate("UPDATE Users SET Username = ? , Email = ? , BirthDate = ? , Password = ?, Role = ? WHERE UserId = ? ")
     int updateUserWithPassword(String username, String email, Date birthDate, String password, String role, String userId);
 
+    //BORRAR TODAS LAS DEPENDENCIAS EN UNA SOLA EJECUCION
     @Transaction
     default void deleteUserWithDependencies(int userId) {
-        // Eliminar dependencias en favoritos
         deleteFavoritesByUserId(userId);
-        // Eliminar el user
+        deleteSignUpsByUserId(userId);
         deleteUser(userId);
     };
 
@@ -51,4 +52,13 @@ public interface UserDao {
 
     @SqlUpdate ("DELETE FROM Users WHERE UserId = ?")
     void deleteUser (int userId);
+
+    @SqlUpdate ("DELETE FROM SignUps WHERE UserId = ?")
+    void deleteSignUpsByUserId (int userId);
+
+    @SqlQuery("SELECT * FROM Users WHERE Username LIKE CONCAT('%',:searchTerm,'%') " +
+            "OR Role LIKE CONCAT('%',:searchTerm,'%') " +
+            "ORDER BY CASE WHEN UserId = :userId THEN 0 ELSE 1 END, Username")
+    @UseRowMapper(UserMapper.class)
+    List<User> getUsersSearch(@Bind("searchTerm")String searchTerm, @Bind("userId")String userId);
 }

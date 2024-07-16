@@ -5,16 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Game {
-    private String gameId;
+public class Activity {
+    private String activityId;
     private String name;
-    private String gameCategoryId;
+    private String activityCategoryId;
     private String description;
-    private Date releaseDate;
+    private LocalDateTime activityDateTime;
     private String picture;
-    private GameCategory gameCategory;
+    private ActivityCategory activityCategory;
 }

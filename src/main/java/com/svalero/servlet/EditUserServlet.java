@@ -1,19 +1,15 @@
 package com.svalero.servlet;
 
-
 import com.svalero.dao.Database;
-import com.svalero.dao.GameDao;
 import com.svalero.dao.UserDao;
 import com.svalero.domain.User;
 import com.svalero.util.Utils;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.apache.commons.lang3.StringUtils;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 
 import java.io.IOException;
@@ -22,7 +18,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 import static com.svalero.util.Messages.sendError;
 import static com.svalero.util.Messages.sendMessage;
@@ -47,6 +42,8 @@ public class EditUserServlet extends HttpServlet {
                 HttpSession session = request.getSession();
 
                 Database.connect();
+
+                System.out.println("Conexion abierta");
                 if (userId.equals("noId")) {
                     if (validatePassword(request, response)) {
                         Database.jdbi.withExtension(UserDao.class, dao -> dao.registerUser(username, email, birthDate, password, role));
@@ -81,6 +78,7 @@ public class EditUserServlet extends HttpServlet {
                         sendMessage("Datos actualizados correctamente.", response);
                     }
                 }
+                Database.close();
             }
         } catch (UnableToExecuteStatementException e){
             e.printStackTrace();
@@ -138,6 +136,3 @@ public class EditUserServlet extends HttpServlet {
     }
 
 }
-
-
-

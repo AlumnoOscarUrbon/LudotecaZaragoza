@@ -33,11 +33,17 @@ public interface GameDao {
     @UseRowMapper(GameMapper.class)
     List<Game> getFilteredGames(@Bind("searchTerm")String searchTerm);
 
+
+
+
     @SqlUpdate ("INSERT INTO Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ? , Picture = ? ")
     int registerGame (String gameName, int gameCategoryId, String gameDescription, Date gameRelease, String picture);
 
     @SqlUpdate ("UPDATE Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ? , Picture = ? WHERE GameId = ?")
-    int updateGame (String gameName, int gameCategoryId, String gameDescription, Date gameRelease, String picture, String gameId);
+    int updateAllGame (String gameName, int gameCategoryId, String gameDescription, Date gameRelease, String picture, String gameId);
+
+    @SqlUpdate ("UPDATE Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ?  WHERE GameId = ?")
+    int updateGameNoImage (String gameName, int gameCategoryId, String gameDescription, Date gameRelease, String gameId);
 
     @Transaction
     default void deleteGameWithDependencies(int gameId) {

@@ -1,8 +1,9 @@
-<%@ page import="com.svalero.dao.GameDao" %>
 <%@ page import="com.svalero.domain.Game" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.svalero.domain.GameCategory" %>
-<%@ page import="com.svalero.dao.GameCategoryDao" %>
+<%@ page import="com.svalero.domain.Activity" %>
+<%@ page import="com.svalero.domain.ActivityCategory" %>
+<%@ page import="com.svalero.dao.*" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 
@@ -13,59 +14,59 @@
         <%@ include file="includes/header.jsp"%>
         <main>
             <%
-                String gameId;
-                Game game = null;
+                String activityId;
+                Activity activity = null;
 
-                if (request.getParameter("actualGameId") == null || request.getParameter("actualGameId").isEmpty()){
-                    gameId ="noId";
+                if (request.getParameter("actualActivityId") == null || request.getParameter("actualActivityId").isEmpty()){
+                    activityId ="noId";
                 } else {
-                    gameId = request.getParameter("actualGameId");
-                    List<Game> gameList = Database.jdbi.withExtension(GameDao.class, dao -> dao.getGameById(gameId));
-                    game = gameList.get(0);
+                    activityId = request.getParameter("actualActivityId");
+                    List<Activity> activityList = Database.jdbi.withExtension(ActivityDao.class, dao -> dao.getActivityById(activityId));
+                    activity = activityList.get(0);
                 }
             %>
             <section class="py-5 container">
                 <div class="row p-4 align-items-center rounded-3 border shadow-lg justify-content-between bg-white">
 
                     <h2 class = "mb-0">
-                        <% if (gameId.equals("noId")){ %>
-                            Registrar un juego nuevo
+                        <% if (activityId.equals("noId")){ %>
+                            Registrar una actividad nueva
                         <% } else { %>
-                            Actualizar <%= game.getName()%>
+                            Actualizar <%= activity.getName()%>
                         <% } %>
                     </h2>
 
-                    <form class="row g-3 needs-validation"  enctype="multipart/form-data" id="edit-form" action="edit-game" >
+                    <form class="row g-3 needs-validation"  enctype="multipart/form-data" id="edit-form" action="edit-activity" >
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
-                            <input type="text" name="gameName" class="form-control" id="name" placeholder="Monopoly"
-                                <% if (!gameId.equals("noId")){%> value= "<%= game.getName()%>" <% } %>>
+                            <input type="text" name="activityName" class="form-control" id="name" placeholder="Tenis de mesa"
+                                <% if (!activityId.equals("noId")){%> value= "<%= activity.getName()%>" <% } %>>
                         </div>
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Descripcion</label>
-                            <textarea rows="4" cols="50" name="gameDescription" class="form-control" id="description" placeholder="Divertido juego donde ganarás una fortuna... "
-                            ><% if (!gameId.equals("noId")){ %><%= game.getDescription() %><% } %></textarea>
+                            <textarea rows="4" cols="50" name="activityDescription" class="form-control" id="description" placeholder="Preparate para unas espectaculares partidas de este milenario deporte asiatico... "
+                            ><% if (!activityId.equals("noId")){ %><%= activity.getDescription() %><% } %></textarea>
                         </div>
 
                         <div class="col-md-4">
-                            <label for="date" class="form-label">Fecha de lanzamiento</label>
-                            <input type="date" name = "gameRelease" class="form-control" id="date" placeholder="dd/mm/yyyy"
-                                <% if (!gameId.equals("noId")){%> value="<%= game.getReleaseDate() %>"<% } %> >
+                            <label for="date" class="form-label">Fecha de celebración</label>
+                            <input type="date" name = "activityRelease" class="form-control" id="date" placeholder="dd/mm/yyyy"
+                                <% if (!activityId.equals("noId")){%> value="<%= activity.getActivityDateTime() %>"<% } %> >
                         </div>
 
                         <div class="col-md-4">
                             <label for="category" class="form-label">Categoria</label>
-                            <select class="form-select" name ="gameCategoryId" id="category" >
-                                    <option disabled <% if (gameId.equals("noId")){ %> selected <% } %> >Selecciona</option>
+                            <select class="form-select" name ="activityCategoryId" id="category" >
+                                    <option disabled <% if (activityId.equals("noId")){ %> selected <% } %> >Selecciona</option>
                                     <%
-                                        List < GameCategory> categories = Database.jdbi.withExtension(GameCategoryDao.class, dao -> dao.getAllGameCategories());
-                                        for (GameCategory category : categories) {
+                                        List <ActivityCategory> categories = Database.jdbi.withExtension(ActivityCategoryDao.class, dao -> dao.getAllActivityCategories());
+                                        for (ActivityCategory category : categories) {
                                     %>
-                                            <option value="<%= category.getGameCategoryId()%>"
+                                            <option value="<%= category.getActivityCategoryId()%>"
                                             <%
-                                                if (!gameId.equals("noId")) {
-                                                    if (game.getGameCategoryId().equals(category.getGameCategoryId())) {
+                                                if (!activityId.equals("noId")) {
+                                                    if (activity.getActivityCategoryId().equals(category.getActivityCategoryId())) {
                                             %>
                                                         selected
                                             <%
@@ -80,12 +81,12 @@
 
                         <div class="col-md-4">
                             <label for="picture" class="form-label">Imagen</label>
-                            <input type="file" name="gamePicture" class="form-control" id="picture">
+                            <input type="file" name="activityPicture" class="form-control" id="picture">
                         </div>
-                        <input type="hidden" name="gameId" value="<%=gameId%>"/>
+                        <input type="hidden" name="activityId" value="<%=activityId%>"/>
                         <div class="col-12 d-flex justify-content-end mb-3 mt-4">
                             <button class="btn btn-primary w-25 py-3 " type="submit" id="edit-button">
-                                <% if (gameId.equals("noId")){ %> REGISTRAR <% } else { %> ACTUALIZAR <% } %>
+                                <% if (activityId.equals("noId")){ %> REGISTRAR <% } else { %> ACTUALIZAR <% } %>
                             </button>
                         </div>
                     </form>
@@ -108,7 +109,7 @@
                     $.ajax({
                         type: "POST",
                         enctype: "multipart/form-data",
-                        url: "edit-game",
+                        url: "edit-activity",
                         data: data,
                         processData: false,
                         contentType: false,
@@ -117,9 +118,9 @@
                         success: function (response) {
                             $("#result-reg").html(response).show();
                             setTimeout(function () {
-                                var gameName = $("#edit-form").find('input[name="gameName"]').val();
+                                var activityName = $("#edit-form").find('input[name="activityName"]').val();
                                 // Redirigir a view-game.jsp después de 2 segundos en caso de éxito
-                                window.location.href = 'view-game.jsp?catIdFilter=noFilterSelected&search=' + encodeURIComponent(gameName);
+                                window.location.href = 'view-activity.jsp?catIdFilter=noFilterSelected&search=' + encodeURIComponent(activityName);
                             }, 2500);
                         },
                         error: function (xhr) {

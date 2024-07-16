@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static com.svalero.util.Messages.sendError;
 import static com.svalero.util.Messages.sendMessage;
 
 @WebServlet("/add-favorite")
@@ -26,12 +27,14 @@ public class AddFavoriteServlet extends HttpServlet {
 
         try {
             Database.connect();
+            Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.addFavorite(actualUserId, gameId));
+            sendMessage("Añadido: favorito", response);
+            Database.close();
         } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            sendError("Error en la BBDD.", response);
             throw new RuntimeException(e);
+
         }
-
-        Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.addFavorite(actualUserId, gameId));
-        sendMessage("conseguido", response);
-
     }
 }

@@ -8,6 +8,7 @@ public class Messages {
 
     public static void sendError(String message, HttpServletResponse response) throws IOException {
         response.getWriter().println("<div class='alert alert-danger  mx-2 mb-2' role='alert'>" + message + "</div>");
+        System.out.println("Error:" + message);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
@@ -18,6 +19,7 @@ public class Messages {
                         "<div class='spinner-border ms-auto spinner-border-sm text-primary' role='status' aria-hidden='true'></div>" +
                         "</div>"
         );
+        System.out.println(message);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
