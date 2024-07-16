@@ -3,6 +3,12 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.svalero.dao.*" %>
 <%@ page import="com.svalero.domain.*" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.LocalTime" %>
+<%@ page import="static com.svalero.util.Utils.formatDate" %>
+<%@ page import="static com.svalero.util.Utils.formatDateTimeToDate" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="static com.svalero.util.Utils.*" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 
@@ -83,18 +89,22 @@
 
                 if (finalActivityList.isEmpty()) {
             %>
-            <div class="container my-4 "> Sin resultados. </div>
+            <div class="container my-4 text-center "> Sin resultados. </div>
             <%
             } else {
                 for (Activity activity : finalActivityList) {
             %>
             <div class=" container  w-100 mb-4 " id="tarjeta<%= activity.getActivityId() %>">
-                <div class="d-flex flex-lg-row flex-column p-4 align-items-center rounded-3 border shadow-lg bg-white">
+                <div class="d-flex flex-lg-row flex-column p-4 align-items-center rounded-3 border shadow-lg white95">
                     <div class="p-3 p-lg-4 d-flex flex-column flex1">
                         <h1 class="display-5 fw-bold lh-0 text-body-emphasis m-0 p-0" id="titulo"><%= activity.getName() %></h1>
                         <p class="lead m-3 lineasmax4"><%= activity.getDescription() %></p>
                         <hr>
-                        <p class="lead my-2 mx-3">Esta actividad de <b><%= activity.getActivityCategory().getName() %></b> se celebrará el <b><%= activity.getActivityDateTime() %></b></p>
+                        <%
+                           String activityDate = formatDateTimeToDate(activity.getActivityDateTime());
+                           String activityTime = formatLocalTimeNoSec(activity.getActivityDateTime());
+                        %>
+                        <p class="lead my-2 mx-3">Esta actividad de <b><%= activity.getActivityCategory().getName() %></b> comenzará el <b><%= activityDate %></b> a las <b><%=activityTime%></b> </p>
                         <hr>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-auto" >
                             <% if (actualUserRole.equals("admin")) { %>
@@ -106,21 +116,12 @@
                                 <button type="submit" class="btn btn-danger btn-lg px-4 w-100 w-md-auto fw-bold">Eliminar</button>
                             </form>
                             <% } %>
-                            <button type="button" class="btn button-sign-up btn-lg px-4 w-100 w-md-auto
+                            <button type="button" data-activityid="<%= activity.getActivityId() %>" data-actualuserid="<%= actualUserId %>"
+                                    class="btn button-sign-up btn-lg px-4 w-100 w-md-auto
                                     <%
                                         SignUp signUp = Database.jdbi.withExtension(SignUpDao.class, dao -> dao.getSignUpsFromUserAndActivity(actualUserId, activity.getActivityId()));
-                                        if (signUp != null){
-                                    %>
-                                            boton-activo
-                                        <% } else { %>
-                                            boton-desactivado
-                                        <% } %>
-                                " data-activityid="<%= activity.getActivityId() %>" data-actualuserid="<%= actualUserId %>"
-                                    <% if (actualUserId.equals("noId")){ %>
-                                    disabled > Apuntarse (Solo usuarios registrados)
-                                <% } else { %>
-                                > Apuntarse
-                                <% } %>
+                                        if (signUp != null){ %> boton-activo-verde <% } else { %> boton-desactivado <% } %> "
+                                    <% if (actualUserId.equals("noId")){ %> disabled > Inscribirse (Solo usuarios registrados)<% } else { %>> Inscrito <% } %>
                             </button>
                         </div>
                     </div>
@@ -201,14 +202,14 @@
                     var actualUserId = buttonSignUp.data('actualuserid');
                     var signUpIcon = $("#sign-up-icon-" + activityId);
 
-                    if (buttonSignUp.hasClass('boton-activo')) {
+                    if (buttonSignUp.hasClass('boton-activo-verde')) {
                         $.ajax({
                             type: "POST",
                             url: "delete-sign-up",
                             data: { activityId: activityId, actualUserId: actualUserId },
                             success: function(response) {
                                 console.log('Se ha eliminado de apuntados correctamente');
-                                buttonSignUp.removeClass('boton-activo').addClass('boton-desactivado');
+                                buttonSignUp.removeClass('boton-activo-verde').addClass('boton-desactivado');
                                 signUpIcon.fadeOut();
                             },
                             error: function() {
@@ -222,7 +223,7 @@
                             data: { activityId: activityId, actualUserId: actualUserId },
                             success: function(response) {
                                 console.log('Se ha añadido a apuntados correctamente');
-                                buttonSignUp.removeClass('boton-desactivado').addClass('boton-activo');
+                                buttonSignUp.removeClass('boton-desactivado').addClass('boton-activo-verde');
                                 signUpIcon.fadeIn();
                             },
                             error: function() {

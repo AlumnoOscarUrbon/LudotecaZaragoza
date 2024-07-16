@@ -17,5 +17,4 @@ public class Favorite {
     private String userId;
     private String gameId;
     private Game gameFav;
-
 }

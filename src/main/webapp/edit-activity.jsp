@@ -4,6 +4,7 @@
 <%@ page import="com.svalero.domain.Activity" %>
 <%@ page import="com.svalero.domain.ActivityCategory" %>
 <%@ page import="com.svalero.dao.*" %>
+<%@ page import="static com.svalero.util.Utils.formatLocalTimeNoSec" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 
@@ -25,8 +26,9 @@
                     activity = activityList.get(0);
                 }
             %>
+
             <section class="py-5 container">
-                <div class="row p-4 align-items-center rounded-3 border shadow-lg justify-content-between bg-white">
+                <div class="row p-4 align-items-center rounded-3 border shadow-lg justify-content-between white95">
 
                     <h2 class = "mb-0">
                         <% if (activityId.equals("noId")){ %>
@@ -36,26 +38,33 @@
                         <% } %>
                     </h2>
 
-                    <form class="row g-3 needs-validation"  enctype="multipart/form-data" id="edit-form" action="edit-activity" >
+                    <form class="row g-3"  enctype="multipart/form-data" id="edit-form" action="edit-activity" >
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
                             <input type="text" name="activityName" class="form-control" id="name" placeholder="Tenis de mesa"
                                 <% if (!activityId.equals("noId")){%> value= "<%= activity.getName()%>" <% } %>>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-3 ">
                             <label for="description" class="form-label">Descripcion</label>
                             <textarea rows="4" cols="50" name="activityDescription" class="form-control" id="description" placeholder="Preparate para unas espectaculares partidas de este milenario deporte asiatico... "
                             ><% if (!activityId.equals("noId")){ %><%= activity.getDescription() %><% } %></textarea>
                         </div>
 
-                        <div class="col-md-4">
-                            <label for="date" class="form-label">Fecha de celebración</label>
-                            <input type="date" name = "activityRelease" class="form-control" id="date" placeholder="dd/mm/yyyy"
-                                <% if (!activityId.equals("noId")){%> value="<%= activity.getActivityDateTime() %>"<% } %> >
+                        <div class="col-md-5 row align-items-end mt-2">
+                            <div class="col-6 ">
+                                <label for="date" class="form-label ">Fecha de comienzo</label>
+                                <input type="date" name = "activityDate" class="form-control " id="date" placeholder="dd/mm/yyyy"
+                                <% if (!activityId.equals("noId")){%> value="<%= activity.getActivityDateTime().toLocalDate() %>"<% } %> >
+                            </div>
+                            <div class="col-6 ">
+                                <label for="appt" class="form-label ">Hora de comienzo</label>
+                                <input type="time" id="appt" name="activityTime" class="form-control"
+                                       <% if (!activityId.equals("noId")){%> value="<%=formatLocalTimeNoSec(activity.getActivityDateTime())%>"<% } %>>
+                            </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="category" class="form-label">Categoria</label>
                             <select class="form-select" name ="activityCategoryId" id="category" >
                                     <option disabled <% if (activityId.equals("noId")){ %> selected <% } %> >Selecciona</option>

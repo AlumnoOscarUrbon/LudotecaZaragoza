@@ -21,10 +21,15 @@ import java.nio.file.Path;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.UUID;
 
 import static com.svalero.util.Messages.sendError;
 import static com.svalero.util.Messages.sendMessage;
+import static com.svalero.util.Utils.*;
 
 @WebServlet("/edit-activity")
 @MultipartConfig
@@ -40,7 +45,9 @@ public class EditActivityServlet extends HttpServlet {
                 String activityName = request.getParameter("activityName");
                 int activityCategoryId = Integer.parseInt(request.getParameter("activityCategoryId"));
                 String activityDescription = request.getParameter("activityDescription");
-                Date activityRelease = Utils.parseDate(request.getParameter("activityRelease"));
+                LocalDate activityDate = parseLocalDate(request.getParameter("activityDate"));
+                LocalTime activityTime =  parseLocalTime(request.getParameter("activityTime"));
+                LocalDateTime activityStart = activityDate.atTime(activityTime);
                 Part picturePart = request.getPart("activityPicture");
 
                 String imagePath = request.getServletContext().getInitParameter("image-path");
@@ -57,15 +64,15 @@ public class EditActivityServlet extends HttpServlet {
 
                 Database.connect();
                 if (activityId.equals("noId")) {
-                    Database.jdbi.withExtension(ActivityDao.class, dao -> dao.registerActivity(activityName, activityCategoryId, activityDescription, activityRelease, finalFileName));
+                    Database.jdbi.withExtension(ActivityDao.class, dao -> dao.registerActivity(activityName, activityCategoryId, activityDescription, activityStart, finalFileName));
                     sendMessage("Registro satisfactorio", response);
 
                 } else {
                     if (picturePart.getSize() != 0) {
-                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateAllActivity(activityName, activityCategoryId, activityDescription, activityRelease, finalFileName, activityId));
+                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateAllActivity(activityName, activityCategoryId, activityDescription, activityStart, finalFileName, activityId));
                         sendMessage("Actualización satisfactoria", response);
                     } else {
-                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateActivityNoImage(activityName, activityCategoryId, activityDescription, activityRelease, activityId));
+                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateActivityNoImage(activityName, activityCategoryId, activityDescription, activityStart, activityId));
                         sendMessage("Actualización satisfactoria. La imagen no ha cambiado", response);
                     }
                 }
@@ -98,9 +105,15 @@ public class EditActivityServlet extends HttpServlet {
             sendError("Debe ingresar una categoria",response);
             hasErrors=false;
         }
+       try {
+           LocalTime activityTime =  parseLocalTime(request.getParameter("activityTime"));
+       } catch (DateTimeParseException e) {
+         sendError("Formato de la horario incorrecto", response);
+           hasErrors=false;
+       }
         try {
-            Utils.parseDate(request.getParameter("activityRelease"));
-        } catch (ParseException pe) {
+            LocalDate activityDate = parseLocalDate(request.getParameter("activityDate"));
+        } catch (DateTimeParseException e) {
             sendError("Formato de la fecha incorrecto", response);
             hasErrors=false;
         }

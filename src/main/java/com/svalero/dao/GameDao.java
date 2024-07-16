@@ -1,6 +1,8 @@
 package com.svalero.dao;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.svalero.domain.Game;
@@ -37,13 +39,13 @@ public interface GameDao {
 
 
     @SqlUpdate ("INSERT INTO Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ? , Picture = ? ")
-    int registerGame (String gameName, int gameCategoryId, String gameDescription, Date gameRelease, String picture);
+    int registerGame (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, String picture);
 
     @SqlUpdate ("UPDATE Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ? , Picture = ? WHERE GameId = ?")
-    int updateAllGame (String gameName, int gameCategoryId, String gameDescription, Date gameRelease, String picture, String gameId);
+    int updateAllGame (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, String picture, String gameId);
 
     @SqlUpdate ("UPDATE Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ?  WHERE GameId = ?")
-    int updateGameNoImage (String gameName, int gameCategoryId, String gameDescription, Date gameRelease, String gameId);
+    int updateGameNoImage (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, String gameId);
 
     @Transaction
     default void deleteGameWithDependencies(int gameId) {

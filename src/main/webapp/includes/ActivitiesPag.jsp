@@ -1,6 +1,4 @@
 <%@ page import="java.util.List" %>
-<%@ page import="com.svalero.domain.Game" %>
-<%@ page import="com.svalero.domain.Favorite" %>
 <%@ page import="static com.svalero.util.Constants.HOWMANYCARDS" %>
 <%@ page import="com.svalero.domain.Activity" %>
 <%@ page import="com.svalero.domain.*" %>
@@ -49,7 +47,6 @@
 
 <%
 //comprobar si hay busqueda activa
-
             List<Activity> activities;
             if (search.isEmpty()) {
                 activities = Database.jdbi.withExtension(ActivityDao.class, ActivityDao::getAllActivities);
@@ -57,6 +54,7 @@
                 String finalSearch = search;
                 activities = Database.jdbi.withExtension(ActivityDao.class, dao -> dao.getFilteredActivities(finalSearch));
             }
+
 //calcular total de resultados
             int sizeActivities;
             if (activities.isEmpty()){
@@ -72,6 +70,7 @@
             } else {
                 actualRowActivities = Integer.parseInt (request.getParameter("actualRowActivities"));
             }
+
 //determinar cartas de pagina actual
             int firstOfRowActivities = (actualRowActivities * HOWMANYCARDS);
             int lastOfRowActivities;
@@ -86,26 +85,26 @@
 
             if (packagedActivities.isEmpty()) {
 %>
-        <div class="container my-2 text-center"> <p>Sin resultados.</p> </div>
+                <div class="container my-2 text-center"> <p>Sin resultados.</p> </div>
 <%
             } else {
                 for (Activity activity : packagedActivities){
 %>
-            <div class="col">
-                <a href="view-activity.jsp?actualActivityId=<%= activity.getActivityId() %>&catIdFilter=noFilterSelected" class="text-decoration-none">
-                    <div class="card card-cover overflow-hidden  rounded-4 shadow-lg center&cover-bg position-relative fine-border"  style="background-image: url('pictures/<%= activity.getPicture() %>');">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"><%= activity.getName()%></h3>
-                                <%
-                                    SignUp signUp = Database.jdbi.withExtension(SignUpDao.class, dao -> dao.getSignUpsFromUserAndActivity(actualUserId, activity.getActivityId()));
-                                    if (signUp != null){
-                                %>
-                                <img src="icons/sign-up-check.png" alt="Icono favorito" class="size-star-icon position-absolute corner-bottom-right">
-                                <% } %>
-                        </div>
+                    <div class="col">
+                        <a href="view-activity.jsp?actualActivityId=<%= activity.getActivityId() %>&catIdFilter=noFilterSelected" class="text-decoration-none">
+                            <div class="card card-cover overflow-hidden  rounded-4 shadow-lg center&cover-bg position-relative fine-border"  style="background-image: url('pictures/<%= activity.getPicture() %>');">
+                                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                                    <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold text-bordered"><%= activity.getName()%></h3>
+<%
+                                            SignUp signUp = Database.jdbi.withExtension(SignUpDao.class, dao -> dao.getSignUpsFromUserAndActivity(actualUserId, activity.getActivityId()));
+                                            if (signUp != null){
+%>
+                                        <img src="icons/sign-up-check.png" alt="Icono favorito" class="size-star-icon position-absolute corner-bottom-right">
+                                        <% } %>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
 <%
                 }
             }

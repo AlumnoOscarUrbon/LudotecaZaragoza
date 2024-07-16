@@ -6,6 +6,8 @@
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="com.svalero.domain.SignUp" %>
 <%@ page import="com.svalero.dao.SignUpDao" %>
+<%@ page import="static com.svalero.util.Utils.formatDateTimeToDate" %>
+<%@ page import="java.util.Collections" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -34,25 +36,28 @@
                 } else {
                     signUps = Database.jdbi.withExtension(SignUpDao.class, dao -> dao.getSignUpsByUserId(actualUserId));
                 }
-            %>
+                if (signUps.isEmpty()) { %>
+                <div class="container my-4 text-center "> Sin resultados. </div> <%
+                } else { %>
                 <div class="container py-3 px-0 bg-white rounded fine-border-light shadow-lg">
 
                 <%
                     if (sorted.equals("desc")){
-                        signUps.sort(Comparator.comparing((SignUp::getRegDateTime)));
+                        signUps.sort(Comparator.comparing(signUp -> signUp.getActivityFav().getActivityDateTime()));
                 %>
                         <div class="d-flex align-items-center border-bottom border-gray pb-2 px-4 gap-2">
-                            <h7 class="mb-0 pb-0 ">Ordenados por fecha:</h7>
+                            <h6 class="lh-1 mb-0 ">Ordenados por fecha de inicio:</h6>
                             <a href="?sorted=asc&search=<%=search%>" class="text-decoration-none m-0 p-0"> Descendente
                                 <img src="icons/sort-down.svg" width="16" height="16" class=" " alt="">
                             </a>
                         </div>
                 <%
                     } else if (sorted.equals("asc")) {
-                        signUps.sort(Comparator.comparing(SignUp::getRegDateTime).reversed());
+                        signUps.sort(Comparator.comparing(signUp -> signUp.getActivityFav().getActivityDateTime()));
+                        Collections.reverse(signUps);
                 %>
                     <div class="d-flex align-items-center border-bottom border-gray pb-2 px-4 gap-2">
-                        <h7 class="mb-0 pb-0 ">Ordenados por fecha:</h7>
+                        <h6 class="lh-1 mb-0 ">Ordenados por fecha de inicio:</h6>
                         <a href="?sorted=desc&search=<%=search%>" class="text-decoration-none m-0 p-0"> Ascendente
                             <img src="icons/sort-up.svg" width="16" height="16" class=" " alt="">
                         </a>
@@ -61,14 +66,14 @@
                     }
                         for (SignUp signUp : signUps) {
                     %>
-                    <div class="media px-5 pt-3" id="signUpItem-<%=signUp.getSignUpId()%>">
+                    <div class="media px-5 pt-3 white95 " id="signUpItem-<%=signUp.getSignUpId()%>">
 
                         <div class="media-body d-flex align-items-center border-bottom border-gray" >
                             <div class="col-3 d-flex justify-content-start mb-3">
                                 <a href="view-activity.jsp?actualActivityId=<%= signUp.getActivityFav().getActivityId() %>"><strong><%= signUp.getActivityFav().getName() %></strong></a>
                             </div>
                             <div class="col-6 d-flex justify-content-center mx-2">
-                                <p><b><%= signUp.getActivityFav().getActivityCategory().getName() %></b> añadido el <b><%= Utils.formatLocalDateTime(signUp.getRegDateTime()) %></b></p>
+                                <p>Actividad de <b><%= signUp.getActivityFav().getActivityCategory().getName() %></b> que comenzará el <b><%= formatDateTimeToDate(signUp.getActivityFav().getActivityDateTime()) %></b></p>
                             </div>
                             <div class="col-3 d-flex justify-content-end pe-3">
                                 <a href="delete-sign-up" class="delete-signup-button" data-signup-id="<%=signUp.getSignUpId()%>"><img src="icons/trash.svg" alt="Trash icon" width="30" height="24" class=""></a>
@@ -79,6 +84,7 @@
                     </div>
                     <% } %>
                 </div>
+                <% } %>
             </div>
         </main>
         <%@include file="includes/footer.jsp"%>

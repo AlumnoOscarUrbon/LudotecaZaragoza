@@ -12,7 +12,7 @@ import java.sql.Date;
 import java.util.List;
 
 public interface UserDao {
-    @SqlQuery("SELECT * FROM Users WHERE Username=? AND Password=?")
+    @SqlQuery("SELECT * FROM Users WHERE Username=? AND Password= SHA1(?)")
     @UseRowMapper(UserMapper.class)
     User getUser(String username, String password);
 
@@ -29,14 +29,14 @@ public interface UserDao {
     @UseRowMapper(UserMapper.class)
     List<User> getAllUsers(String userId);
 
-    @SqlUpdate("INSERT INTO Users SET Username = ? , Email = ? , BirthDate = ? , Password = ? , Role = ? ")
+    @SqlUpdate("INSERT INTO Users SET Username = ? , Email = ? , BirthDate = ? , Password = SHA1(?) , Role = ? ")
     int registerUser (String username, String email, Date birthDate, String password, String role);
 
 
     @SqlUpdate("UPDATE Users SET Username = ? , Email = ? , BirthDate = ? , Role = ? WHERE UserId = ? ")
     int updateUserWOPassword(String username, String email, Date birthDate, String role, String userId);
 
-    @SqlUpdate("UPDATE Users SET Username = ? , Email = ? , BirthDate = ? , Password = ?, Role = ? WHERE UserId = ? ")
+    @SqlUpdate("UPDATE Users SET Username = ? , Email = ? , BirthDate = ? , Password = SHA1(?), Role = ? WHERE UserId = ? ")
     int updateUserWithPassword(String username, String email, Date birthDate, String password, String role, String userId);
 
     //BORRAR TODAS LAS DEPENDENCIAS EN UNA SOLA EJECUCION

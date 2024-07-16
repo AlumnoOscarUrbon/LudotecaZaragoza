@@ -87,18 +87,18 @@
 
                 if (finalGameList.isEmpty()) {
             %>
-            <div class="container my-4 "> Sin resultados. </div>
+            <div class="container my-4 text-center"> Sin resultados. </div>
             <%
             } else {
                 for (Game game : finalGameList) {
             %>
             <div class=" container  w-100 mb-4 " id="tarjeta<%= game.getGameId() %>">
-                <div class="d-flex flex-lg-row flex-column p-4 align-items-center rounded-3 border shadow-lg bg-white">
+                <div class="d-flex flex-lg-row flex-column p-4 align-items-center rounded-3 border shadow-lg white95">
                     <div class="p-3 p-lg-4 d-flex flex-column flex1">
                         <h1 class="display-5 fw-bold lh-0 text-body-emphasis m-0 p-0" id="titulo"><%= game.getName() %></h1>
                         <p class="lead m-3 lineasmax4"><%= game.getDescription() %></p>
                         <hr>
-                        <p class="lead my-2 mx-3">Este <b><%= game.getGameCategory().getName() %></b> fue lanzado el <b><%= Utils.formatDate(game.getReleaseDate()) %></b></p>
+                        <p class="lead my-2 mx-3">Este <b><%= game.getGameCategory().getName() %></b> fue lanzado el <b><%= Utils.formatDateTimeToDate(game.getReleaseDateTime()) %></b></p>
                         <hr>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-auto" >
                             <% if (actualUserRole.equals("admin")) { %>
@@ -110,7 +110,8 @@
                                 <button type="submit" class="btn btn-danger btn-lg px-4 w-100 w-md-auto fw-bold">Eliminar</button>
                             </form>
                             <% } %>
-                            <button type="button" class="btn button-favorite btn-lg px-4 w-100 w-md-auto
+                            <button type="button" data-gameid="<%= game.getGameId() %>" data-actualuserid="<%= actualUserId %>"
+                                    class="btn button-favorite btn-lg px-4 w-100 w-md-auto
                                     <%
                                         Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
                                         if (favorite != null){
@@ -118,8 +119,7 @@
                                             boton-activo
                                         <% } else { %>
                                             boton-desactivado
-                                        <% } %>
-                                " data-gameid="<%= game.getGameId() %>" data-actualuserid="<%= actualUserId %>"
+                                        <% } %> "
                                     <% if (actualUserId.equals("noId")){ %>
                                     disabled > Favorito (Solo usuarios registrados)
                                 <% } else { %>

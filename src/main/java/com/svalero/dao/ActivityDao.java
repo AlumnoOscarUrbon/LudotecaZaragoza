@@ -7,7 +7,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ActivityDao {
@@ -32,14 +32,14 @@ public interface ActivityDao {
     @UseRowMapper(ActivityMapper.class)
     List<Activity> getFilteredActivities(@Bind("searchTerm")String searchTerm);
 
-    @SqlUpdate ("INSERT INTO Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ReleaseDate = ? , Picture = ? ")
-    int registerActivity (String activityName, int activityCategoryId, String activityDescription, Date activityRelease, String picture);
+    @SqlUpdate ("INSERT INTO Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ActivityStart = ? , Picture = ? ")
+    int registerActivity (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, String picture);
 
-    @SqlUpdate ("UPDATE Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ReleaseDate = ? , Picture = ? WHERE ActivityId = ?")
-    int updateAllActivity (String activityName, int activityCategoryId, String activityDescription, Date gactivityRelease, String picture, String activityId);
+    @SqlUpdate ("UPDATE Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ActivityStart = ? , Picture = ? WHERE ActivityId = ?")
+    int updateAllActivity (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, String picture, String activityId);
 
-    @SqlUpdate ("UPDATE Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ReleaseDate = ?  WHERE ActivityId = ?")
-    int updateActivityNoImage (String activityName, int activityCategoryId, String activityDescription, Date activityRelease, String activityId);
+    @SqlUpdate ("UPDATE Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ActivityStart = ?  WHERE ActivityId = ?")
+    int updateActivityNoImage (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, String activityId);
 
     @Transaction
     default void deleteActivityWithDependencies(int activityId) {

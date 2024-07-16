@@ -95,7 +95,7 @@
                 <a href="view-game.jsp?actualGameId=<%= game.getGameId() %>&catIdFilter=noFilterSelected" class="text-decoration-none">
                     <div class="card card-cover overflow-hidden  rounded-4 shadow-lg center&cover-bg position-relative fine-border"  style="background-image: url('pictures/<%= game.getPicture() %>');">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"><%= game.getName()%></h3>
+                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold text-bordered"><%= game.getName()%></h3>
                                 <%
                                     Favorite favorite = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesFromUserAndGame(actualUserId, game.getGameId()));
                                     if (favorite != null){

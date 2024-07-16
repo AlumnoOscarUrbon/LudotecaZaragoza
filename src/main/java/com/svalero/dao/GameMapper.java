@@ -2,6 +2,7 @@ package com.svalero.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.svalero.domain.Game;
@@ -16,13 +17,13 @@ public class GameMapper implements RowMapper<Game>{
 
         String gameCategoryId = rs.getString("gameCategoryId");
         GameCategory gameCategory = Database.jdbi.withExtension(GameCategoryDao.class, dao -> dao.getGameCategoryById(gameCategoryId));
-
+        LocalDateTime releaseDateTime= rs.getTimestamp("releaseDate").toLocalDateTime();
         return new Game(
                 rs.getString("gameId"),
                 rs.getString("name"),
                 rs.getString("gameCategoryId"),
                 rs.getString("description"),
-                rs.getDate("releaseDate"),
+                releaseDateTime,
                 rs.getString("picture"),
                 gameCategory
         );

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class Game {
     private String name;
     private String gameCategoryId;
     private String description;
-    private Date releaseDate;
+    private LocalDateTime releaseDateTime;
     private String picture;
     private GameCategory gameCategory;
 }

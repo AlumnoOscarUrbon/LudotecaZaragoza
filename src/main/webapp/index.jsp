@@ -10,7 +10,7 @@
         %>
         <main>
             <%@ include file="includes/GamesPag.jsp"%>
-          <%@ include file="includes/ActivitiesPag.jsp"%>
+            <%@ include file="includes/ActivitiesPag.jsp"%>
         </main>
         <%@include file="includes/footer.jsp"%>
     </body>

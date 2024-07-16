@@ -19,7 +19,7 @@ public class ActivityMapper implements RowMapper<Activity>{
         String activityCategoryId = rs.getString("activityCategoryId");
         ActivityCategory activityCategory = Database.jdbi.withExtension(ActivityCategoryDao.class, dao -> dao.getActivityCategoryById(activityCategoryId));
 
-        LocalDateTime activityDateTime = rs.getTimestamp("ActivityDateTime").toLocalDateTime();
+        LocalDateTime activityDateTime = rs.getTimestamp("ActivityStart").toLocalDateTime();
         return new Activity(
                 rs.getString("activityId"),
                 rs.getString("name"),

@@ -54,15 +54,15 @@
                     %>
                     <input type="text" class="form-control form-control-dark me-2" aria-label="Search" name="search"  id="search-input"
                        <%
-                           // SACAR NOMBRE DEL ARCHIVO JSP ACTUAL
+                           // OBTENER NOMBRE DEL ARCHIVO JSP ACTUAL
                            String uri = request.getRequestURI();
                            String fileName = uri.substring(uri.lastIndexOf('/') + 1);
-                           //DESHABILITAR BUSCADOR EN SITIOS CONCRETOS.
-                           if (fileName.equals("edit-game.jsp") || (fileName.equals("view-user.jsp") && !actualUserRole.equals("admin"))) {
+                           //DESHABILITAR BUSCADOR EN PAGINAS CONCRETOS.
+                           if (fileName.equals("edit-game.jsp") || fileName.equals("edit-activity.jsp") || (fileName.equals("view-user.jsp") && !actualUserRole.equals("admin"))) {
                        %>
                                 disabled placeholder="No disponible aquí"
                        <%  } else { %>
-                                placeholder=" <% if (request.getParameter("search") != null && !request.getParameter("search").isEmpty()){ %> &quot;<%= request.getParameter("search") %>&quot;
+                                placeholder="<% if (request.getParameter("search") != null && !request.getParameter("search").isEmpty()){ %> &quot;<%= request.getParameter("search") %>&quot;
                             <% } else { %>Buscar... <% } } %>" >
                     <button type="submit" class="btn btn-outline-light" id="search-button">Buscar</button>
                 </form>
@@ -89,7 +89,7 @@
 
 <%@ include file="LoginPag.jsp"%>
 
-<!-- AUTO-MARCAR BUSQUEDA -->
+<!-- AUTO-SELECCIONAR INPUT BUSQUEDA -->
 <script>
     $(document).ready(function(){
         $("#search-input").focus();

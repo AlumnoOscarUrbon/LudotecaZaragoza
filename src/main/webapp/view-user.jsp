@@ -13,36 +13,38 @@
         <%@ include file="includes/header.jsp"%>
         <main>
             <div class="container my-3">
-                    <%
-                        List<User> actualUserList = new ArrayList<>();
-                        boolean isFirstTime = true;
+            <%
+                List<User> actualUserList = new ArrayList<>();
+                boolean isFirstTime = true;
 
-                        String search = request.getParameter("search");
-                        if (search == null || search.isBlank()) {
-                            search = "%";
-                        };
+                String search = request.getParameter("search");
+                if (search == null || search.isBlank()) {
+                    search = "%";
+                };
 
-                        if (actualUserRole.equals("admin")) {
-                            %> <div class="container"><h2 class="border-bottom my-4 pb-2 ">Administrar Usuarios</h2></div> <%
-                            final String searchTerm = search;
-                            actualUserList = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUsersSearch(searchTerm, actualUserId));
+                if (actualUserRole.equals("admin")) {
+                    %> <div class="container"><h2 class="border-bottom my-4 pb-2 ">Administrar Usuarios</h2></div> <%
+                    final String searchTerm = search;
+                    actualUserList = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUsersSearch(searchTerm, actualUserId));
 
-                        } else if (actualUserRole.equals("user")) {
-                            %> <div class="container"><h2 class="border-bottom my-4 pb-2 ">Mis Datos</h2></div> <%
-                            actualUserList = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserById(actualUserId));
+                } else if (actualUserRole.equals("user")) {
+                    %> <div class="container"><h2 class="border-bottom my-4 pb-2 ">Mis Datos</h2></div> <%
+                    actualUserList = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserById(actualUserId));
 
-                        } else {
-                            %> <div class="container"><h2 class="border-bottom my-4 pb-2 ">Registrar Usuario</h2></div> <%
-                            actualUserList.add(new User());
-                            actualUserList.get(0).setUserId("noId");
-                            actualUserList.get(0).setRole("noRole");
-                        }
-                    %>
+                } else {
+                    %> <div class="container"><h2 class="border-bottom my-4 pb-2 ">Registrar Usuario</h2></div> <%
+                    actualUserList.add(new User());
+                    actualUserList.get(0).setUserId("noId");
+                    actualUserList.get(0).setRole("noRole");
+                }
+                if (actualUserList.size() == 0) { %>
+                    <div class="container my-4 text-center "> Sin resultados. </div> <%
+                } else { %>
                 <div class="accordion shadow-lg rounded-4" id="accordionUsers">
 
                     <% for (User actualUser : actualUserList) { %>
 
-                    <div class="accordion-item" id="accordion-item-<%=actualUser.getUserId()%>">
+                    <div class="accordion-item white95" id="accordion-item-<%=actualUser.getUserId()%>">
                         <h2 class="accordion-header">
                             <button class="accordion-button <%if (!isFirstTime){ %> collapsed <%}%>"
                                 type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%=actualUser.getUserId()%>"
@@ -87,7 +89,7 @@
                                         <button class="btn submit btn-primary w-100 "  type="submit" data-user-id="<%=actualUser.getUserId()%>" id="edit-button-<%=actualUser.getUserId()%>">
                                             <% if (actualUser.getUserId().equals("noId")){ %> REGISTRAR <% } else { %> ACTUALIZAR <% } %>
                                         </button>
-                                        <button class="btn delete btn-danger w-100 "  type="submit" data-user-id="<%=actualUser.getUserId()%>" data-current-user-id="<%=actualUserId%>" id="delete-button-<%=actualUser.getUserId()%>"
+                                        <button class="btn btn-danger w-100 " data-bs-toggle="modal" data-bs-target="#Delete-Modal-<%=actualUser.getUserId()%>" type="button" id="delete-button-<%=actualUser.getUserId()%>"
                                                 <% if (actualUser.getUserId().equals("noId")){ %> style="display:none;"<% } %>> BORRAR
                                         </button>
                                     </div>
@@ -95,14 +97,37 @@
                             </div>
                             <div id="result-user-<%=actualUser.getUserId()%>" class="user-message"></div>
                         </div>
+
+                        <!-- MODAL CONFIRMACION BORRADO -->
+                        <div class="modal fade" id="Delete-Modal-<%=actualUser.getUserId()%>" tabindex="-1" aria-labelledby="DeleteModalLabel-<%=actualUser.getUserId()%>" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-top-third ">
+                                <div class="modal-content p-3 white95 center&cover-bg" style = "background-image: url('icons/stripes.jpg');" >
+                                    <div class="modal-header d-flex justify-content-between ">
+                                        <h2 class=" fs-4 mb-0" id="SignInModalLabel">Eliminar permanentemente</h2>
+                                        <button type="button" class="btn-close bclose-corner " data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body mx-3 d-flex flex-column justify-content-center align-items-center">
+                                        <h2 class="border-bottom mb-4"><b><%=actualUser.getUsername()%></b></h2>
+
+                                            <button class="btn delete btn-danger w-50 text-center p-3" type="submit" data-user-id="<%=actualUser.getUserId()%>" data-current-user-id="<%=actualUserId%>" id="confirm-delete-button-<%=actualUser.getUserId()%>" data-bs-dismiss="modal"
+                                                    <% if (actualUser.getUserId().equals("noId")) { %> style="display:none;" <% } %>>CONFIRMAR
+                                            </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                     <%
                             isFirstTime= false;
                         }
                     %>
                 </div>
+                <% } %>
             </div>
         </main>
+
         <%@ include file="includes/footer.jsp"%>
 
         <script type="text/javascript">
@@ -146,12 +171,11 @@
                     const userId = $(this).data("user-id");
                     const currentUserId = $(this).data("current-user-id");
                     var userCard = $("#accordion-item-" + userId);
-                    const formValue = $("#edit-form-"+userId ).serialize();
                     $(this).prop("disabled", true);
                     $.ajax({
                         type: "POST",
                         url: "delete-user",
-                        data: formValue,
+                        data: {userId: userId},
                         success: function(response) {
                             userCard.animate({ opacity: 0 }, 250, function() {
                                 userCard.slideUp(300, function() {
@@ -163,8 +187,9 @@
                                 window.location.href = "logout";
                             }
                         },
-                        error: function() {
+                        error: function () {
                             alert('Error al eliminar la tarjeta.');
+                            $("#confirm-delete-button-" + userId).prop("disabled", false);
                         }
                     });
                 });

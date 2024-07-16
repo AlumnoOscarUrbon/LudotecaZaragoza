@@ -80,8 +80,16 @@
 .boton-activo:active,
 .boton-activo:focus,
 .boton-activo {
-    background-color: #ffd92b;
+    background-color: #f8e841;
     border-color: #af8e00;
+}
+
+.boton-activo-verde:hover,
+.boton-activo-verde:active,
+.boton-activo-verde:focus,
+.boton-activo-verde {
+    background-color: #a9e44f;
+    border-color: #17af00;
 }
 
 .boton-desactivado:hover,
@@ -124,4 +132,26 @@ body {
 
 .pagination {
 
+}
+.text-bordered {
+    /* Sombra negra al 30%, con desenfoque de 5px */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.white95 {
+    background-color: rgb(253, 253, 253);
+}
+
+
+.modal-header {
+    position: relative;
+}
+.modal-header .btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.modal-dialog-top-third {
+    top: 9%;
 }

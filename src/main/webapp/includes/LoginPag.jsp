@@ -24,7 +24,7 @@
 
 <!-- Modal - Inicio sesion -->
 <div class="modal fade" id="Sign-In-Modal" tabindex="-1" aria-labelledby="SignInModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-top-third">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between mx-3 pb-2">
                 <div><h2 class="modal-title fs-3" id="SignInModalLabel">¡Bienvenido!</h2></div>

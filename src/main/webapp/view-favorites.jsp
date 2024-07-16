@@ -4,6 +4,8 @@
 <%@ page import="com.svalero.util.Utils" %>
 <%@ page import="java.util.Comparator" %>
 <%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="static com.svalero.util.Utils.formatLocalTimeNoSec" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,17 +34,18 @@
                 } else {
                     favorites = Database.jdbi.withExtension(FavoriteDao.class, dao -> dao.getFavoritesByUserId(actualUserId));
                 }
-            %>
-                <div class="container py-3 px-0 bg-white rounded fine-border-light shadow-lg">
-
+                if (favorites.isEmpty()) { %>
+                    <div class="container my-4 text-center "> Sin resultados. </div> <%
+                } else { %>
+                    <div class="container py-3 px-0 bg-white rounded fine-border-light shadow-lg">
                 <%
                     if (sorted.equals("desc")){
                         favorites.sort(Comparator.comparing((Favorite::getRegDateTime)));
                 %>
                         <div class="d-flex align-items-center border-bottom border-gray pb-2 px-4 gap-2">
-                            <h7 class="mb-0 pb-0 ">Ordenados por fecha:</h7>
-                            <a href="?sorted=asc&search=<%=search%>" class="text-decoration-none m-0 p-0"> Descendente
-                                <img src="icons/sort-down.svg" width="16" height="16" class=" " alt="">
+                            <h6 class=" lh-1 mb-0 ">Ordenados por fecha:</h6>
+                            <a href="?sorted=asc&search=<%=search%>" class="text-decoration-none m-0 p-0 "> Descendente
+                                <img src="icons/sort-down.svg" width="16" height="16" alt="Imagen descendente">
                             </a>
                         </div>
                 <%
@@ -50,23 +53,27 @@
                         favorites.sort(Comparator.comparing(Favorite::getRegDateTime).reversed());
                 %>
                     <div class="d-flex align-items-center border-bottom border-gray pb-2 px-4 gap-2">
-                        <h7 class="mb-0 pb-0 ">Ordenados por fecha:</h7>
+                        <h6 class=" lh-1 mb-0 ">Ordenados por fecha:</h6>
                         <a href="?sorted=desc&search=<%=search%>" class="text-decoration-none m-0 p-0"> Ascendente
-                            <img src="icons/sort-up.svg" width="16" height="16" class=" " alt="">
+                            <img src="icons/sort-up.svg" width="16" height="16" class=" " alt="Imagen ascendente">
                         </a>
                     </div>
                 <%
                     }
                         for (Favorite favorite : favorites) {
                     %>
-                    <div class="media px-5 pt-3" id="favItem-<%=favorite.getFavoriteId()%>">
+                    <div class="media px-5 pt-3 white95" id="favItem-<%=favorite.getFavoriteId()%>">
 
                         <div class="media-body d-flex align-items-center border-bottom border-gray" >
                             <div class="col-3 d-flex justify-content-start mb-3">
                                 <a href="view-game.jsp?actualGameId=<%= favorite.getGameFav().getGameId() %>"><strong><%= favorite.getGameFav().getName() %></strong></a>
                             </div>
                             <div class="col-6 d-flex justify-content-center mx-2">
-                                <p><b><%= favorite.getGameFav().getGameCategory().getName() %></b> añadido el <b><%= Utils.formatLocalDateTime(favorite.getRegDateTime()) %></b></p>
+                                <%
+                                    String regDate = Utils.formatDateTimeToDate(favorite.getRegDateTime());
+                                    String regTime = formatLocalTimeNoSec(favorite.getRegDateTime());
+                                %>
+                                <p><b><%= favorite.getGameFav().getGameCategory().getName() %></b> añadido a favoritos el <b><%= regDate %></b> a las <b><%= regTime %></b></p>
                             </div>
                             <div class="col-3 d-flex justify-content-end pe-3">
                                 <a href="delete-favorite" class="delete-favorite-button" data-favorite-id="<%=favorite.getFavoriteId()%>"><img src="icons/trash.svg" alt="Trash icon" width="30" height="24" class=""></a>
@@ -77,6 +84,7 @@
                     </div>
                     <% } %>
                 </div>
+                <% } %>
             </div>
         </main>
         <%@include file="includes/footer.jsp"%>

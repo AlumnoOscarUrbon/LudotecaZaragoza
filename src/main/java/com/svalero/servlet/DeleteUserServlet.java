@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 
 import static com.svalero.util.Messages.sendError;
 import static com.svalero.util.Messages.sendMessage;
@@ -29,7 +30,11 @@ public class DeleteUserServlet extends HttpServlet {
             Database.jdbi.useExtension(UserDao.class, dao -> dao.deleteUserWithDependencies(userId));
             sendMessage("usuario borrado", response);
             Database.close();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLSyntaxErrorException a){
+            a.printStackTrace();
+            sendError("Error en la BBDs.", response);
+            throw new RuntimeException(a);
+        } catch (SQLException | ClassNotFoundException e ) {
             e.printStackTrace();
             sendError("Error en la BBDD.", response);
             throw new RuntimeException(e);

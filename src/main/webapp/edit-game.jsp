@@ -25,7 +25,7 @@
                 }
             %>
             <section class="py-5 container">
-                <div class="row p-4 align-items-center rounded-3 border shadow-lg justify-content-between bg-white">
+                <div class="row p-4 align-items-center rounded-3 border shadow-lg justify-content-between white95">
 
                     <h2 class = "mb-0">
                         <% if (gameId.equals("noId")){ %>
@@ -51,7 +51,7 @@
                         <div class="col-md-4">
                             <label for="date" class="form-label">Fecha de lanzamiento</label>
                             <input type="date" name = "gameRelease" class="form-control" id="date" placeholder="dd/mm/yyyy"
-                                <% if (!gameId.equals("noId")){%> value="<%= game.getReleaseDate() %>"<% } %> >
+                                <% if (!gameId.equals("noId")){%> value="<%= game.getReleaseDateTime().toLocalDate() %>"<% } %> >
                         </div>
 
                         <div class="col-md-4">

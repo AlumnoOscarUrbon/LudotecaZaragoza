@@ -2,9 +2,6 @@ package com.svalero.servlet;
 
 import com.svalero.dao.Database;
 import com.svalero.dao.GameDao;
-import com.svalero.dao.UserDao;
-import com.svalero.domain.Game;
-import com.svalero.util.Utils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,25 +9,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import org.apache.commons.lang3.time.DateUtils;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 
-import java.sql.Date;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.svalero.util.Messages.sendError;
 import static com.svalero.util.Messages.sendMessage;
+import static com.svalero.util.Utils.parseLocalDate;
 
 @WebServlet("/edit-game")
 @MultipartConfig
@@ -46,9 +40,10 @@ public class EditGameServlet extends HttpServlet {
                 String gameName = request.getParameter("gameName");
                 int gameCategoryId = Integer.parseInt(request.getParameter("gameCategoryId"));
                 String gameDescription = request.getParameter("gameDescription");
-                Date gameRelease = Utils.parseDate(request.getParameter("gameRelease"));
-                Part picturePart = request.getPart("gamePicture");
+                LocalDate gameRelease = parseLocalDate(request.getParameter("gameRelease"));
 
+                //CARGA Y NOMBRADO DE IMAGEN
+                Part picturePart = request.getPart("gamePicture");
                 String imagePath = request.getServletContext().getInitParameter("image-path");
                 String absolutePath = getServletContext().getRealPath("/") + imagePath;
                 String fileName = null;
@@ -105,8 +100,8 @@ public class EditGameServlet extends HttpServlet {
             hasErrors=false;
         }
         try {
-            Utils.parseDate(request.getParameter("gameRelease"));
-        } catch (ParseException pe) {
+            parseLocalDate(request.getParameter("gameRelease"));
+        } catch (DateTimeParseException pe) {
             sendError("Formato de la fecha incorrecto", response);
             hasErrors=false;
         }
