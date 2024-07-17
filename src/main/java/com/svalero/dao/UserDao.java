@@ -1,6 +1,5 @@
 package com.svalero.dao;
 
-import com.svalero.domain.Game;
 import com.svalero.domain.User;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -20,15 +19,6 @@ public interface UserDao {
     @UseRowMapper(UserMapper.class)
     List <User> getUserById (String userId);
 
-
-    @SqlQuery("SELECT * FROM Users WHERE Username = ?")
-    @UseRowMapper(UserMapper.class)
-    User getUserByUsername (String username);
-
-    @SqlQuery("SELECT * FROM Users ORDER BY CASE WHEN UserId = ? THEN 0 ELSE 1 END, Username")
-    @UseRowMapper(UserMapper.class)
-    List<User> getAllUsers(String userId);
-
     @SqlUpdate("INSERT INTO Users SET Username = ? , Email = ? , BirthDate = ? , Password = SHA1(?) , Role = ? ")
     int registerUser (String username, String email, Date birthDate, String password, String role);
 
@@ -39,13 +29,13 @@ public interface UserDao {
     @SqlUpdate("UPDATE Users SET Username = ? , Email = ? , BirthDate = ? , Password = SHA1(?), Role = ? WHERE UserId = ? ")
     int updateUserWithPassword(String username, String email, Date birthDate, String password, String role, String userId);
 
-    //BORRAR TODAS LAS DEPENDENCIAS EN UNA SOLA EJECUCION
+    //Borrar todas las dependencias en una sola ejecución
     @Transaction
     default void deleteUserWithDependencies(int userId) {
         deleteFavoritesByUserId(userId);
         deleteSignUpsByUserId(userId);
         deleteUser(userId);
-    };
+    }
 
     @SqlUpdate ("DELETE FROM Favorites WHERE UserId = ?")
     void deleteFavoritesByUserId(int userId);

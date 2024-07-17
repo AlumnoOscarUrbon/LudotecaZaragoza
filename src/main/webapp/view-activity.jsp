@@ -1,13 +1,8 @@
-<%@ page import="com.svalero.util.Utils" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.svalero.dao.*" %>
 <%@ page import="com.svalero.domain.*" %>
-<%@ page import="java.time.LocalDate" %>
-<%@ page import="java.time.LocalTime" %>
-<%@ page import="static com.svalero.util.Utils.formatDate" %>
 <%@ page import="static com.svalero.util.Utils.formatDateTimeToDate" %>
-<%@ page import="java.time.LocalDateTime" %>
 <%@ page import="static com.svalero.util.Utils.*" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -20,23 +15,27 @@
         <main>
             <%
                 String catIdFilterParam = request.getParameter("catIdFilter");
-                if (catIdFilterParam == null) {catIdFilterParam = "";};
+                if (catIdFilterParam == null) {
+                    catIdFilterParam = "";
+                };
             %>
             <div class="container my-4">
-                <div class="row align-items-center justify-content-center ">
-                    <form class="col ">
+                <div class="row align-items-center justify-content-center">
+                    <form class="col">
                         <select class="form-select border border-dark-gray" id="floatingSelect" aria-label="Floating label select">
-                            <option disabled <% if (catIdFilterParam.equals("noFilterSelected")) {%>selected <% } %>>Selecciona una categoría</option>
-                            <option value="" <% if (catIdFilterParam.isEmpty()) { %> selected <% } %>>Todas las actividades</option>
+                            <option disabled <%= catIdFilterParam.equals("noFilterSelected") ? "selected" : "" %>>Selecciona una categoría</option>
+                            <option value="" <%= catIdFilterParam.isEmpty() ? "selected" : "" %>>Todas las actividades</option>
                             <%
-                                List<ActivityCategory> activityCategories = Database.jdbi.withExtension(ActivityCategoryDao.class, dao -> dao.getAllActivityCategories());
-                                for (ActivityCategory activityCategory : activityCategories) {
+                                List<ActivityCategory> activityCategories = Database.jdbi.withExtension(ActivityCategoryDao.class, ActivityCategoryDao::getAllActivityCategories);
+                                for (ActivityCategory currentActivityCategory : activityCategories) {
                             %>
-                            <option class="" value="<%=activityCategory.getActivityCategoryId()%>"
-                                    <% if (catIdFilterParam.equals(activityCategory.getActivityCategoryId())) { %> selected <% } %>
-                            > Solo <%= activityCategory.getName() %>
+                            <option value="<%= currentActivityCategory.getActivityCategoryId() %>"
+                                    <%= catIdFilterParam.equals(currentActivityCategory.getActivityCategoryId()) ? "selected" : "" %>>
+                                Solo <%= currentActivityCategory.getName() %>
                             </option>
-                            <% } %>
+                            <%
+                                }
+                            %>
                         </select>
                     </form>
 
@@ -44,91 +43,94 @@
                         <button id="resetSearch" type="button" class="btn btn-warning w-100">Eliminar búsqueda en curso</button>
                     </div>
 
-                    <% if (actualUserRole.equals("admin")) { %>
-                    <div class="col-12 col-md-3 ">
+                    <% if (sessionUserRole.equals("admin")) { %>
+                    <div class="col-12 col-md-3">
                         <a href="edit-activity.jsp" class="text-decoration-none">
                             <button type="button" class="btn btn-success w-100">AÑADIR ACTIVIDAD</button>
                         </a>
                     </div>
                     <% } %>
-
                 </div>
             </div>
 
-
             <%
                 String search = request.getParameter("search");
-                if (search == null) {search = "";};
-                String activityId = request.getParameter("actualActivityId");
-                if (activityId == null) {activityId = "";};
+                if (search == null) {
+                    search = "";
+                };
+
+                String activityId = request.getParameter("currentActivityId");
+                if (activityId == null) {
+                    activityId = "";
+                };
+
                 List<Activity> activities;
 
-            //FILTRADO BUSQUEDA
-                if (!search.isEmpty()) {
+                //Seleccion de sentencia SQL
+                if (!search.isBlank()) {
                     String finalSearch = search;
                     activities = Database.jdbi.withExtension(ActivityDao.class, dao -> dao.getFilteredActivities(finalSearch));
                 } else if (!activityId.isEmpty()) {
                     String finalActivityId = activityId;
                     activities = Database.jdbi.withExtension(ActivityDao.class, dao -> dao.getActivityById(finalActivityId));
                 } else {
-                    activities = Database.jdbi.withExtension(ActivityDao.class, dao -> dao.getAllActivities());
+                    activities = Database.jdbi.withExtension(ActivityDao.class, ActivityDao::getAllActivities);
                 }
 
-            //FILTRADO POR CATEGORIA
+                //Filtrado por categoria
                 List<Activity> finalActivityList = new ArrayList<>();
-
                 if (!catIdFilterParam.isEmpty() && !catIdFilterParam.equals("noFilterSelected")) {
-                    for (Activity activity : activities) {
-                        if (activity.getActivityCategoryId().equals(catIdFilterParam)) {
-                            finalActivityList.add(activity);
+                    for (Activity currentActivity : activities) {
+                        if (currentActivity.getActivityCategoryId().equals(catIdFilterParam)) {
+                            finalActivityList.add(currentActivity);
                         }
                     }
                 } else {
                     finalActivityList = activities;
                 }
-
+                //Iterar
                 if (finalActivityList.isEmpty()) {
             %>
-            <div class="container my-4 text-center "> Sin resultados. </div>
+            <div class="container my-4 text-center "><p>Sin resultados.</p></div>
             <%
-            } else {
-                for (Activity activity : finalActivityList) {
+                } else {
+                    for (Activity currentActivity : finalActivityList) {
             %>
-            <div class=" container  w-100 mb-4 " id="tarjeta<%= activity.getActivityId() %>">
+            <div class="container w-100 mb-4" id="card<%= currentActivity.getActivityId() %>">
                 <div class="d-flex flex-lg-row flex-column p-4 align-items-center rounded-3 border shadow-lg white95">
                     <div class="p-3 p-lg-4 d-flex flex-column flex1">
-                        <h1 class="display-5 fw-bold lh-0 text-body-emphasis m-0 p-0" id="titulo"><%= activity.getName() %></h1>
-                        <p class="lead m-3 lineasmax4"><%= activity.getDescription() %></p>
+                        <h1 class="display-5 fw-bold lh-0 text-body-emphasis m-0 p-0" id="titulo"><%= currentActivity.getName() %></h1>
+                        <p class="lead m-3 lineasmax4"><%= currentActivity.getDescription() %></p>
                         <hr>
                         <%
-                           String activityDate = formatDateTimeToDate(activity.getActivityDateTime());
-                           String activityTime = formatLocalTimeNoSec(activity.getActivityDateTime());
+                           String activityDate = formatDateTimeToDate(currentActivity.getActivityDateTime());
+                           String activityTime = formatLocalTimeNoSec(currentActivity.getActivityDateTime());
                         %>
-                        <p class="lead my-2 mx-3">Esta actividad de <b><%= activity.getActivityCategory().getName() %></b> comenzará el <b><%= activityDate %></b> a las <b><%=activityTime%></b> </p>
+                        <p class="lead my-2 mx-3">Esta actividad de <b><%= currentActivity.getActivityCategory().getName() %></b> comenzará el <b><%= activityDate %></b> a las <b><%= activityTime %></b></p>
                         <hr>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-auto" >
-                            <% if (actualUserRole.equals("admin")) { %>
-                            <a href="edit-activity.jsp?actualActivityId=<%= activity.getActivityId() %>">
+                            <%
+                                if (sessionUserRole.equals("admin")) {
+                            %>
+                            <a href="edit-activity.jsp?currentActivityId=<%= currentActivity.getActivityId() %>">
                                 <button type="button" class="btn btn-primary btn-lg px-4 w-100 w-md-auto fw-bold">Editar</button>
                             </a>
-                            <form class="formDelete" action="delete-activity" method="post">
-                                <input type="hidden" name="actualActivityId" value="<%= activity.getActivityId() %>">
-                                <button type="submit" class="btn btn-danger btn-lg px-4 w-100 w-md-auto fw-bold">Eliminar</button>
-                            </form>
-                            <% } %>
-                            <button type="button" data-activityid="<%= activity.getActivityId() %>" data-actualuserid="<%= actualUserId %>"
+                                <button type="button" class="btn btn-danger btn-delete btn-lg px-4 w-100 w-md-auto fw-bold" data-current-activity-id="<%= currentActivity.getActivityId() %>">Eliminar</button>
+                            <%
+                                }
+                            %>
+                            <button type="button" data-current-activity-id="<%= currentActivity.getActivityId() %>" data-session-user-id="<%= sessionUserId %>"
                                     class="btn button-sign-up btn-lg px-4 w-100 w-md-auto
-                                    <%
-                                        SignUp signUp = Database.jdbi.withExtension(SignUpDao.class, dao -> dao.getSignUpsFromUserAndActivity(actualUserId, activity.getActivityId()));
-                                        if (signUp != null){ %> boton-activo-verde <% } else { %> boton-desactivado <% } %> "
-                                    <% if (actualUserId.equals("noId")){ %> disabled > Inscribirse (Solo usuarios registrados)<% } else { %>> Inscrito <% } %>
+                                    <%  SignUp signUp = Database.jdbi.withExtension(SignUpDao.class, dao -> dao.getSignUpsFromUserAndActivity(sessionUserId, currentActivity.getActivityId())); %>
+                                    <%= signUp != null ? "btn-active-green" : "btn-inactive" %>"
+                                    <%= sessionUserId.equals("noId") ? "disabled >Favorito (Solo usuarios registrados)" : ">Inscrito" %>
                             </button>
                         </div>
                     </div>
                     <div class="d-flex py-0 px-3 m-0 align-items-center overflow-hidden flex1 w-100 h-100">
                         <div class="position-relative w-100 h-100">
-                            <img class="rounded rounded-4 object-fit-cover h350 w-100 fine-border" src="pictures/<%= activity.getPicture() %>" alt="">
-                            <img src="icons/sign-up-check.png" id="sign-up-icon-<%= activity.getActivityId() %>" alt="Icono favorito" class="size-star-icon position-absolute corner-bottom-right" <% if (signUp == null){ %> style="display:none;" <% } %>>
+                            <img class="rounded rounded-4 object-fit-cover h350 w-100 fine-border" src="pictures/<%= currentActivity.getPicture() %>" alt="imagen de actividad">
+                            <img src="icons/sign-up-check.png" id="sign-up-icon-<%= currentActivity.getActivityId() %>" class="size-star-icon position-absolute corner-bottom-right" <%= signUp == null ? "style='display:none;'" : "" %> alt="Icono favorito">
                         </div>
                     </div>
                 </div>
@@ -138,7 +140,6 @@
                 }
             %>
         </main>
-
         <%@ include file="includes/footer.jsp"%>
 
         <!-- Desplegable Seleccion de categoria-->
@@ -149,8 +150,7 @@
                     var actualUrl = window.location.href.split('?')[0];
                     var searchParams = new URLSearchParams(window.location.search);
                     var searchValue = searchParams.get('search') || '';
-                    var newUrl = actualUrl + '?catIdFilter=' + selectedCatValue + '&search=' + encodeURIComponent(searchValue);
-                    window.location.href = newUrl;
+                    window.location.href = actualUrl + '?catIdFilter=' + selectedCatValue + '&search=' + encodeURIComponent(searchValue);
                 });
             });
         </script>
@@ -158,7 +158,7 @@
         <!-- Botón Reset de busqueda y filtros-->
         <script type="text/javascript">
             $(document).ready(function() {
-                $("#resetSearch").on("click", function(event) {
+                $("#resetSearch").on("click", function() {
                     window.location.href = window.location.href.split('?')[0];
                 });
             });
@@ -167,18 +167,16 @@
         <!-- Eliminacion tarjetas-->
         <script type="text/javascript">
             $(document).ready(function() {
-                $(".formDelete").on("submit", function(event) {
+                $(".btn-delete").on("click", function(event) {
                     event.preventDefault();
-
-                    var form = $(this);
-                    var activityId = form.find('input[name="actualActivityId"]').val();
-                    var card = $("#tarjeta" + activityId);
+                    var currentActivityId = $(this).data('current-activity-id');
+                    var card = $("#card" + currentActivityId);
 
                     $.ajax({
                         type: "POST",
                         url: "delete-activity",
-                        data: form.serialize(),
-                        success: function(response) {
+                        data: {activityId : currentActivityId},
+                        success: function() {
                             card.animate({ opacity: 0 }, 250, function() {
                                 card.slideUp(300, function() {
                                     card.remove();
@@ -196,20 +194,20 @@
         <!-- Boton favorito y aparicion de estrella -->
         <script type="text/javascript">
             $(document).ready(function() {
-                $(".button-sign-up").on("click", function(event) {
+                $(".button-sign-up").on("click", function() {
                     var buttonSignUp= $(this);
-                    var activityId = buttonSignUp.data('activityid');
-                    var actualUserId = buttonSignUp.data('actualuserid');
-                    var signUpIcon = $("#sign-up-icon-" + activityId);
+                    var currentActivityId = buttonSignUp.data('current-activity-id');
+                    var sessionUserId = buttonSignUp.data('session-user-id');
+                    var signUpIcon = $("#sign-up-icon-" + currentActivityId);
 
-                    if (buttonSignUp.hasClass('boton-activo-verde')) {
+                    if (buttonSignUp.hasClass('btn-active-green')) {
                         $.ajax({
                             type: "POST",
                             url: "delete-sign-up",
-                            data: { activityId: activityId, actualUserId: actualUserId },
-                            success: function(response) {
+                            data: { activityId: currentActivityId, sessionUserId: sessionUserId },
+                            success: function() {
                                 console.log('Se ha eliminado de apuntados correctamente');
-                                buttonSignUp.removeClass('boton-activo-verde').addClass('boton-desactivado');
+                                buttonSignUp.removeClass('btn-active-green').addClass('btn-inactive');
                                 signUpIcon.fadeOut();
                             },
                             error: function() {
@@ -220,10 +218,10 @@
                         $.ajax({
                             type: "POST",
                             url: "add-sign-up",
-                            data: { activityId: activityId, actualUserId: actualUserId },
-                            success: function(response) {
+                            data: { activityId: currentActivityId, sessionUserId: sessionUserId },
+                            success: function() {
                                 console.log('Se ha añadido a apuntados correctamente');
-                                buttonSignUp.removeClass('boton-desactivado').addClass('boton-activo-verde');
+                                buttonSignUp.removeClass('btn-inactive').addClass('btn-active-green');
                                 signUpIcon.fadeIn();
                             },
                             error: function() {

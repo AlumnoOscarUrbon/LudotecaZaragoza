@@ -16,10 +16,10 @@
                 String gameId;
                 Game game = null;
 
-                if (request.getParameter("actualGameId") == null || request.getParameter("actualGameId").isEmpty()){
+                if (request.getParameter("currentGameId") == null || request.getParameter("currentGameId").isEmpty()){
                     gameId ="noId";
                 } else {
-                    gameId = request.getParameter("actualGameId");
+                    gameId = request.getParameter("currentGameId");
                     List<Game> gameList = Database.jdbi.withExtension(GameDao.class, dao -> dao.getGameById(gameId));
                     game = gameList.get(0);
                 }
@@ -28,53 +28,44 @@
                 <div class="row p-4 align-items-center rounded-3 border shadow-lg justify-content-between white95">
 
                     <h2 class = "mb-0">
-                        <% if (gameId.equals("noId")){ %>
-                            Registrar un juego nuevo
-                        <% } else { %>
-                            Actualizar <%= game.getName()%>
-                        <% } %>
+                        <%= gameId.equals("noId") ? "Registrar un juego nuevo" : "Actualizar " + game.getName() %>
                     </h2>
 
-                    <form class="row g-3 needs-validation"  enctype="multipart/form-data" id="edit-form" action="edit-game" >
+                    <form class="row g-3" enctype="multipart/form-data" id="edit-form" action="edit-game" >
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
                             <input type="text" name="gameName" class="form-control" id="name" placeholder="Monopoly"
-                                <% if (!gameId.equals("noId")){%> value= "<%= game.getName()%>" <% } %>>
+                                <%= !gameId.equals("noId") ? "value='" + game.getName() + "'" : "" %>>
                         </div>
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Descripcion</label>
                             <textarea rows="4" cols="50" name="gameDescription" class="form-control" id="description" placeholder="Divertido juego donde ganarás una fortuna... "
-                            ><% if (!gameId.equals("noId")){ %><%= game.getDescription() %><% } %></textarea>
+                            ><%= !gameId.equals("noId") ? game.getDescription() : "" %></textarea>
                         </div>
 
                         <div class="col-md-4">
                             <label for="date" class="form-label">Fecha de lanzamiento</label>
                             <input type="date" name = "gameRelease" class="form-control" id="date" placeholder="dd/mm/yyyy"
-                                <% if (!gameId.equals("noId")){%> value="<%= game.getReleaseDateTime().toLocalDate() %>"<% } %> >
+                                <%= !gameId.equals("noId") ? "value='" + game.getReleaseDateTime().toLocalDate() + "'" : "" %> >
                         </div>
 
                         <div class="col-md-4">
                             <label for="category" class="form-label">Categoria</label>
                             <select class="form-select" name ="gameCategoryId" id="category" >
-                                    <option disabled <% if (gameId.equals("noId")){ %> selected <% } %> >Selecciona</option>
+                                <option disabled <%= gameId.equals("noId") ? "selected" : "" %> >Selecciona</option>
+
                                     <%
-                                        List < GameCategory> categories = Database.jdbi.withExtension(GameCategoryDao.class, dao -> dao.getAllGameCategories());
-                                        for (GameCategory category : categories) {
+                                        List < GameCategory> categories = Database.jdbi.withExtension(GameCategoryDao.class, GameCategoryDao::getAllGameCategories);
+                                        for (GameCategory currentCategory : categories) {
                                     %>
-                                            <option value="<%= category.getGameCategoryId()%>"
-                                            <%
-                                                if (!gameId.equals("noId")) {
-                                                    if (game.getGameCategoryId().equals(category.getGameCategoryId())) {
-                                            %>
-                                                        selected
-                                            <%
-                                                    };
-                                                };
-                                            %>
-                                                ><%= category.getName() %>
-                                            </option>
-                                    <% } %>
+                                <option value="<%= currentCategory.getGameCategoryId()%>"
+                                        <%= !gameId.equals("noId") && game.getGameCategoryId().equals(currentCategory.getGameCategoryId()) ? "selected" : "" %>>
+                                    <%= currentCategory.getName() %>
+                                </option>
+                                <%
+                                    }
+                                %>
                             </select>
                         </div>
 
@@ -85,7 +76,7 @@
                         <input type="hidden" name="gameId" value="<%=gameId%>"/>
                         <div class="col-12 d-flex justify-content-end mb-3 mt-4">
                             <button class="btn btn-primary w-25 py-3 " type="submit" id="edit-button">
-                                <% if (gameId.equals("noId")){ %> REGISTRAR <% } else { %> ACTUALIZAR <% } %>
+                                <%= gameId.equals("noId") ? "REGISTRAR" : "ACTUALIZAR" %>
                             </button>
                         </div>
                     </form>
@@ -96,7 +87,7 @@
         </main>
         <%@include file="includes/footer.jsp"%>
 
-        <!-- PROCESAR FORMULARIO -->
+        <!-- Procesar formulario -->
         <script type="text/javascript">
             $(document).ready(function () {
                 $("#edit-button").click(function (event) {

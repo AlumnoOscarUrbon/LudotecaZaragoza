@@ -6,7 +6,9 @@
         <%@ include file="includes/header.jsp"%>
         <%
             String search = request.getParameter("search");
-            if (search == null) {search = "";};
+            if (search == null) {
+                search = "";
+            };
         %>
         <main>
             <%@ include file="includes/GamesPag.jsp"%>

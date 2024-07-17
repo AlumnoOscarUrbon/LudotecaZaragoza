@@ -3,29 +3,25 @@
 <%@ page import="java.sql.SQLException" %>
 
 <%
-
     try {
         Database.connect();
     } catch (SQLException | ClassNotFoundException e) {
         System.out.println("Error estableciendo conexion con BBDD");
+        e.printStackTrace();
         throw new RuntimeException(e);
     }
 
-//  RECONOCIMIENTO DE USUARIO
-
+//  Reconocimiento usuario
     HttpSession currentSession = request.getSession();
-    String actualUserId;
-    String actualUsername;
-    String actualUserRole;
+    String sessionUserId;
+    String sessionUserRole;
 
     if (currentSession.getAttribute("id") != null) {
-        actualUserId = currentSession.getAttribute("id").toString();
-        actualUsername= currentSession.getAttribute("username").toString();
-        actualUserRole= currentSession.getAttribute("role").toString();
+        sessionUserId = currentSession.getAttribute("id").toString();
+        sessionUserRole = currentSession.getAttribute("role").toString();
     } else {
-        actualUserId = "noId";
-        actualUsername = "noUsername";
-        actualUserRole = "noRole";
+        sessionUserId = "noId";
+        sessionUserRole = "noRole";
     }
 %>
 
@@ -47,34 +43,34 @@
                         if (request.getParameter("catIdFilter") != null){
                             if (!request.getParameter("catIdFilter").isBlank()){
                     %>
-                            <input type="hidden" name="catIdFilter" value="<%= request.getParameter("catIdFilter") %>">
+                    <input type="hidden" name="catIdFilter" value="<%= request.getParameter("catIdFilter") %>">
                     <%
                             }
                         }
                     %>
-                    <input type="text" class="form-control form-control-dark me-2" aria-label="Search" name="search"  id="search-input"
-                       <%
-                           // OBTENER NOMBRE DEL ARCHIVO JSP ACTUAL
-                           String uri = request.getRequestURI();
-                           String fileName = uri.substring(uri.lastIndexOf('/') + 1);
-                           //DESHABILITAR BUSCADOR EN PAGINAS CONCRETOS.
-                           if (fileName.equals("edit-game.jsp") || fileName.equals("edit-activity.jsp") || (fileName.equals("view-user.jsp") && !actualUserRole.equals("admin"))) {
-                       %>
-                                disabled placeholder="No disponible aquí"
-                       <%  } else { %>
-                                placeholder="<% if (request.getParameter("search") != null && !request.getParameter("search").isEmpty()){ %> &quot;<%= request.getParameter("search") %>&quot;
-                            <% } else { %>Buscar... <% } } %>" >
+                    <input type="text" class="form-control form-control-dark me-2" aria-label="Search" name="search" id="search-input"
+                    <%
+                       // Obtener nombre del jsp actual
+                       String uri = request.getRequestURI();
+                       String fileName = uri.substring(uri.lastIndexOf('/') + 1);
+                       //Deshabilitar buscador en paginas especificas
+                       if (fileName.equals("edit-game.jsp") || fileName.equals("edit-activity.jsp") || (fileName.equals("view-user.jsp") && !sessionUserRole.equals("admin"))) {
+                    %>
+                            disabled placeholder="No disponible aquí"
+                   <%  } else { %>
+                            placeholder="<% if (request.getParameter("search") != null && !request.getParameter("search").isEmpty()){ %> &quot;<%= request.getParameter("search") %>&quot;
+                    <% } else { %>Buscar... <% } } %>" >
                     <button type="submit" class="btn btn-outline-light" id="search-button">Buscar</button>
                 </form>
 
                 <div class="text-end ">
-                    <% if (actualUserId.equals("noId")) { %>
-                        <button type="button" class="btn btn-warning " data-bs-toggle="modal" data-bs-target="#Sign-In-Modal">Login</button>
+                    <% if (sessionUserId.equals("noId")) { %>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Sign-In-Modal">Login</button>
                     <% } else { %>
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Area Personal</button>
                             <ul class="dropdown-menu ">
-                                <li><a class="dropdown-item" href="view-user.jsp"> <% if (actualUserRole.equals("admin")) { %> Usuarios <% } else { %> Mis datos <% } %></a></li>
+                                <li><a class="dropdown-item" href="view-user.jsp"> <%= sessionUserRole.equals("admin") ? "Usuarios" : "Mis datos" %></a></li>
                                 <li><a class="dropdown-item" href="view-favorites.jsp"> Mis favoritos </a></li>
                                 <li><a class="dropdown-item" href="view-signups.jsp"> Mis Inscripciones </a></li>
                                 <li><hr class="dropdown-divider"></li>
@@ -89,7 +85,7 @@
 
 <%@ include file="LoginPag.jsp"%>
 
-<!-- AUTO-SELECCIONAR INPUT BUSQUEDA -->
+<!-- Auto seleccion campo busqueda -->
 <script>
     $(document).ready(function(){
         $("#search-input").focus();

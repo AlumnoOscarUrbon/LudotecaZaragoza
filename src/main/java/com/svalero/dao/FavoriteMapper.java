@@ -2,19 +2,13 @@ package com.svalero.dao;
 
 import com.svalero.domain.Favorite;
 import com.svalero.domain.Game;
-import com.svalero.util.Utils;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-
-import static com.svalero.util.Utils.formatDate;
 
 public class FavoriteMapper implements RowMapper<Favorite> {
 

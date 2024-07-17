@@ -8,11 +8,7 @@ public class Messages {
 
     public static void sendError(String message, HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        try (PrintWriter out = response.getWriter()) {
-            out.println("<div class='alert alert-danger mx-2 mb-2' role='alert'>" + message + "</div>");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        response.getWriter().println("<div class='alert alert-danger mx-2 mb-2' role='alert'>" + message + "</div>");
         System.out.println("Error:" + message);
     }
 

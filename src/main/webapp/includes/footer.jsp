@@ -15,9 +15,12 @@
 
 
 
-<% try {
-    Database.close();
-} catch (SQLException e) {
-    System.out.println("Error cerrando conexion con BBDD");
-    throw new RuntimeException(e);
-} %>
+<%
+    try {
+        Database.close();
+    } catch (SQLException e) {
+        System.out.println("Error cerrando conexion con BBDD");
+        e.printStackTrace();
+        throw new RuntimeException(e);
+    }
+%>

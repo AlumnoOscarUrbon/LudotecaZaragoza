@@ -3,7 +3,6 @@ package com.svalero.servlet;
 import com.svalero.dao.Database;
 import com.svalero.dao.UserDao;
 import com.svalero.domain.User;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,14 +31,11 @@ public class LoginServlet extends HttpServlet {
             User user = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUser(username,password));
 
             if (user != null) {
-
                 HttpSession session = request.getSession();
-
-                session.setAttribute("username", user.getUsername());
                 session.setAttribute("role", user.getRole());
                 session.setAttribute("id", user.getUserId());
-
                 sendMessage("login correcto.",response);
+
             } else {
                 sendError("Login incorrecto.", response);
             }

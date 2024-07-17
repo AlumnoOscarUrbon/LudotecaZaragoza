@@ -42,11 +42,11 @@ public class EditGameServlet extends HttpServlet {
                 String gameDescription = request.getParameter("gameDescription");
                 LocalDate gameRelease = parseLocalDate(request.getParameter("gameRelease"));
 
-                //CARGA Y NOMBRADO DE IMAGEN
+                //Carga y nombrado de imagen
                 Part picturePart = request.getPart("gamePicture");
                 String imagePath = request.getServletContext().getInitParameter("image-path");
                 String absolutePath = getServletContext().getRealPath("/") + imagePath;
-                String fileName = null;
+                String fileName;
                 if (picturePart.getSize() == 0) {
                     fileName = "picture_default.jpg";
                 } else {

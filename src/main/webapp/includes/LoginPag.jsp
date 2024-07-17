@@ -28,7 +28,7 @@
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between mx-3 pb-2">
                 <div><h2 class="modal-title fs-3" id="SignInModalLabel">¡Bienvenido!</h2></div>
-                <div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div><button type="button" class="btn-close bclose-signin" data-bs-dismiss="modal" aria-label="Close"></button></div>
             </div>
             <div class="modal-body mx-3">
                 <form id="form1" method="post">
@@ -42,7 +42,7 @@
                     </div>
                     <button class="btn btn-warning w-100 py-2 my-3" type="submit">Iniciar sesión</button>
                     <hr class="my-2">
-                    <small class="text-body-secondary fs-6"> Si no tienes cuenta   <a href="view-user.jsp" class="fs-5">registrate aquí.</a> </small>
+                    <small class="text-body-secondary fs-6"> Si no tienes cuenta  <a href="${pageContext.request.contextPath}/view-user.jsp" class="fs-5">registrate aquí.</a> </small>
                 </form>
                 <hr>
                 <div id="result-login"></div>

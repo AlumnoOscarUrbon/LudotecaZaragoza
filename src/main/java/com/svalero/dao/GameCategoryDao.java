@@ -1,6 +1,5 @@
 package com.svalero.dao;
 
-import com.svalero.domain.Game;
 import com.svalero.domain.GameCategory;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;

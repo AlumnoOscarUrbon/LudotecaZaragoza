@@ -21,7 +21,7 @@ public class DeleteActivityServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        int activityId = Integer.parseInt(request.getParameter("actualActivityId"));
+        int activityId = Integer.parseInt(request.getParameter("activityId"));
         try {
             Database.connect();
             Database.jdbi.useExtension(ActivityDao.class, dao -> dao.deleteActivityWithDependencies(activityId));

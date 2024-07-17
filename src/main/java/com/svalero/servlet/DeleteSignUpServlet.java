@@ -22,14 +22,14 @@ public class DeleteSignUpServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
         String activityId = request.getParameter("activityId");
-        String actualUserId = request.getParameter("actualUserId");
+        String userId = request.getParameter("sessionUserId");
         String signUpId = request.getParameter("signUpId");
         try {
             Database.connect();
             if (signUpId != null ) {
                 Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpBySignUpId(signUpId));
             } else {
-                Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpByActivityId(actualUserId, activityId));
+                Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpByActivityId(userId, activityId));
             }
             sendMessage("Borrado completado: sign up", response);
             Database.close();

@@ -50,7 +50,6 @@ public class EditUserServlet extends HttpServlet {
 
                         User userForLogin = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUser(username, password));
 
-                        session.setAttribute("username", userForLogin.getUsername());
                         session.setAttribute("role", userForLogin.getRole());
                         session.setAttribute("id", userForLogin.getUserId());
                         sendMessage("Registro satisfactorio", response);
@@ -61,7 +60,6 @@ public class EditUserServlet extends HttpServlet {
                         Database.jdbi.withExtension(UserDao.class, dao -> dao.updateUserWOPassword(username, email, birthDate, role, userId));
 
                         if (session.getAttribute("id").equals(userId)) {
-                            session.setAttribute("username", username);
                             session.setAttribute("role", role );
                             session.setAttribute("id", userId);
                         }
@@ -71,7 +69,6 @@ public class EditUserServlet extends HttpServlet {
                             Database.jdbi.withExtension(UserDao.class, dao -> dao.updateUserWithPassword(username, email, birthDate, password, role, userId));
 
                         if (session.getAttribute("id").equals(userId)) {
-                            session.setAttribute("username", username);
                             session.setAttribute("role", role );
                             session.setAttribute("id", userId);
                         }
@@ -110,8 +107,8 @@ public class EditUserServlet extends HttpServlet {
         try {
             Date birthDate = Utils.parseDate(request.getParameter("birthDate"));
             LocalDate localBirthDate = birthDate.toLocalDate();
-            LocalDate actualDate= LocalDate.now();
-            Period period = Period.between(localBirthDate, actualDate);
+            LocalDate currentDate= LocalDate.now();
+            Period period = Period.between(localBirthDate, currentDate);
             if (period.getYears() < 18) {
                 sendError("Debes ser mayor de 18 años.",response);
                 hasErrors=false;

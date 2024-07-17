@@ -14,13 +14,8 @@ public interface SignUpDao {
     @UseRowMapper(SignUpMapper.class)
     SignUp getSignUpsFromUserAndActivity(String userId, String signUpId);
 
-
-    @SqlQuery("SELECT * FROM SignUps WHERE UserId = ? ")
-    @UseRowMapper(SignUpMapper.class)
-    List<SignUp> getSignUpsByUserId(String userId);
-
     @SqlUpdate("INSERT INTO SignUps  SET UserId = ? , ActivityId = ? ")
-    int addSignUp(String userId, String activityId);
+    void addSignUp(String userId, String activityId);
 
     @SqlUpdate("DELETE FROM SignUps WHERE UserId = ? AND ActivityId = ?")
     void deleteSignUpByActivityId(String userId, String activityId);
@@ -28,13 +23,13 @@ public interface SignUpDao {
     @SqlUpdate("DELETE FROM SignUps WHERE SignUpId = ?")
     void deleteSignUpBySignUpId(String signUpId);
 
-    @SqlQuery("SELECT f.* " +
-            "FROM SignUps f " +
-            "JOIN Activities g ON f.ActivityId = g.ActivityId " +
-            "JOIN ActivitiesCategories gc ON g.ActivityCategoryId = gc.ActivityCategoryId " +
-            "WHERE f.UserId = :userId " +
-            "  AND (g.Name LIKE CONCAT('%', :searchTerm, '%') " +
-            "       OR gc.Name LIKE CONCAT('%', :searchTerm, '%')" +
+    @SqlQuery("SELECT s.* " +
+            "FROM SignUps s " +
+            "JOIN Activities a ON s.ActivityId = a.ActivityId " +
+            "JOIN ActivitiesCategories ac ON a.ActivityCategoryId = ac.ActivityCategoryId " +
+            "WHERE s.UserId = :userId " +
+            "  AND (a.Name LIKE CONCAT('%', :searchTerm, '%') " +
+            "       OR ac.Name LIKE CONCAT('%', :searchTerm, '%')" +
             ")"
     )
     @UseRowMapper(SignUpMapper.class)

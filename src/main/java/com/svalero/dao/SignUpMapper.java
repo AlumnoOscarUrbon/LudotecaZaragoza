@@ -1,8 +1,6 @@
 package com.svalero.dao;
 
 import com.svalero.domain.Activity;
-import com.svalero.domain.Favorite;
-import com.svalero.domain.Game;
 import com.svalero.domain.SignUp;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;

@@ -1,6 +1,4 @@
-<%@ page import="com.svalero.domain.Game" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.svalero.domain.GameCategory" %>
 <%@ page import="com.svalero.domain.Activity" %>
 <%@ page import="com.svalero.domain.ActivityCategory" %>
 <%@ page import="com.svalero.dao.*" %>
@@ -18,73 +16,63 @@
                 String activityId;
                 Activity activity = null;
 
-                if (request.getParameter("actualActivityId") == null || request.getParameter("actualActivityId").isEmpty()){
+                if (request.getParameter("currentActivityId") == null || request.getParameter("currentActivityId").isEmpty()){
                     activityId ="noId";
                 } else {
-                    activityId = request.getParameter("actualActivityId");
+                    activityId = request.getParameter("currentActivityId");
                     List<Activity> activityList = Database.jdbi.withExtension(ActivityDao.class, dao -> dao.getActivityById(activityId));
                     activity = activityList.get(0);
                 }
             %>
-
             <section class="py-5 container">
                 <div class="row p-4 align-items-center rounded-3 border shadow-lg justify-content-between white95">
 
                     <h2 class = "mb-0">
-                        <% if (activityId.equals("noId")){ %>
-                            Registrar una actividad nueva
-                        <% } else { %>
-                            Actualizar <%= activity.getName()%>
-                        <% } %>
+                        <%= activityId.equals("noId") ? "Registrar una actividad nueva" : "Actualizar " + activity.getName() %>
                     </h2>
 
-                    <form class="row g-3"  enctype="multipart/form-data" id="edit-form" action="edit-activity" >
+                    <form class="row g-3" enctype="multipart/form-data" id="edit-form" action="edit-activity" >
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
                             <input type="text" name="activityName" class="form-control" id="name" placeholder="Tenis de mesa"
-                                <% if (!activityId.equals("noId")){%> value= "<%= activity.getName()%>" <% } %>>
+                                <%= !activityId.equals("noId") ? "value='" + activity.getName() + "'" : "" %>>
                         </div>
 
-                        <div class="mb-3 ">
-                            <label for="description" class="form-label">Descripcion</label>
-                            <textarea rows="4" cols="50" name="activityDescription" class="form-control" id="description" placeholder="Preparate para unas espectaculares partidas de este milenario deporte asiatico... "
-                            ><% if (!activityId.equals("noId")){ %><%= activity.getDescription() %><% } %></textarea>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea rows="4" cols="50" name="activityDescription" class="form-control" id="description" placeholder="Preparate para unas partidas de este milenario deporte... "
+                            ><%= !activityId.equals("noId") ? activity.getDescription() : "" %></textarea>
                         </div>
 
                         <div class="col-md-5 row align-items-end mt-2">
                             <div class="col-6 ">
                                 <label for="date" class="form-label ">Fecha de comienzo</label>
                                 <input type="date" name = "activityDate" class="form-control " id="date" placeholder="dd/mm/yyyy"
-                                <% if (!activityId.equals("noId")){%> value="<%= activity.getActivityDateTime().toLocalDate() %>"<% } %> >
+                                <%= !activityId.equals("noId") ? "value='" + activity.getActivityDateTime().toLocalDate() + "'" : "" %> >
                             </div>
-                            <div class="col-6 ">
+                            <div class="col-6">
                                 <label for="appt" class="form-label ">Hora de comienzo</label>
                                 <input type="time" id="appt" name="activityTime" class="form-control"
-                                       <% if (!activityId.equals("noId")){%> value="<%=formatLocalTimeNoSec(activity.getActivityDateTime())%>"<% } %>>
+                                   <%= !activityId.equals("noId") ? "value='" + formatLocalTimeNoSec(activity.getActivityDateTime()) + "'" : "" %>
+                                />
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <label for="category" class="form-label">Categoria</label>
                             <select class="form-select" name ="activityCategoryId" id="category" >
-                                    <option disabled <% if (activityId.equals("noId")){ %> selected <% } %> >Selecciona</option>
-                                    <%
-                                        List <ActivityCategory> categories = Database.jdbi.withExtension(ActivityCategoryDao.class, dao -> dao.getAllActivityCategories());
-                                        for (ActivityCategory category : categories) {
-                                    %>
-                                            <option value="<%= category.getActivityCategoryId()%>"
-                                            <%
-                                                if (!activityId.equals("noId")) {
-                                                    if (activity.getActivityCategoryId().equals(category.getActivityCategoryId())) {
-                                            %>
-                                                        selected
-                                            <%
-                                                    };
-                                                };
-                                            %>
-                                                ><%= category.getName() %>
-                                            </option>
-                                    <% } %>
+                                <option disabled <%= activityId.equals("noId") ? "selected" : "" %> >Selecciona</option>
+                                <%
+                                    List <ActivityCategory> categories = Database.jdbi.withExtension(ActivityCategoryDao.class, ActivityCategoryDao::getAllActivityCategories);
+                                    for (ActivityCategory currentCategory : categories) {
+                                %>
+                                <option value="<%= currentCategory.getActivityCategoryId()%>"
+                                <%= !activityId.equals("noId") && activity.getActivityCategoryId().equals(currentCategory.getActivityCategoryId()) ? "selected" : "" %>>
+                                    <%= currentCategory.getName() %>
+                                </option>
+                                <%
+                                    }
+                                %>
                             </select>
                         </div>
 
@@ -92,10 +80,10 @@
                             <label for="picture" class="form-label">Imagen</label>
                             <input type="file" name="activityPicture" class="form-control" id="picture">
                         </div>
-                        <input type="hidden" name="activityId" value="<%=activityId%>"/>
+                        <input type="hidden" name="activityId" value="<%= activityId %>">
                         <div class="col-12 d-flex justify-content-end mb-3 mt-4">
                             <button class="btn btn-primary w-25 py-3 " type="submit" id="edit-button">
-                                <% if (activityId.equals("noId")){ %> REGISTRAR <% } else { %> ACTUALIZAR <% } %>
+                                <%= activityId.equals("noId") ? "REGISTRAR" : "ACTUALIZAR" %>
                             </button>
                         </div>
                     </form>
@@ -106,7 +94,7 @@
         </main>
         <%@include file="includes/footer.jsp"%>
 
-        <!-- PROCESAR FORMULARIO -->
+        <!-- Procesar formulario -->
         <script type="text/javascript">
             $(document).ready(function () {
                 $("#edit-button").click(function (event) {

@@ -1,7 +1,6 @@
 package com.svalero.dao;
 
 import com.svalero.domain.ActivityCategory;
-import com.svalero.domain.GameCategory;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

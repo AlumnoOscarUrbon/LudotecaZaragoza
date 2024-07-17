@@ -2,7 +2,6 @@ package com.svalero.servlet;
 
 import com.svalero.dao.Database;
 import com.svalero.dao.FavoriteDao;
-import com.svalero.dao.GameDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,12 +22,12 @@ public class AddFavoriteServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
         String gameId = request.getParameter("gameId");
-        String actualUserId = request.getParameter("actualUserId");
+        String userId = request.getParameter("sessionUserId");
 
         try {
             Database.connect();
-            Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.addFavorite(actualUserId, gameId));
-            sendMessage("Añadido: favorito", response);
+            Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.addFavorite(userId, gameId));
+            sendMessage("Añadido completado: favorito", response);
             Database.close();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

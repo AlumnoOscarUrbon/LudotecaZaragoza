@@ -22,14 +22,14 @@ public class DeleteFavoriteServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
         String gameId = request.getParameter("gameId");
-        String actualUserId = request.getParameter("actualUserId");
+        String userId = request.getParameter("sessionUserId");
         String favoriteId = request.getParameter("favoriteId");
         try {
             Database.connect();
             if (favoriteId != null ) {
                 Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByFavId(favoriteId));
             } else {
-                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(actualUserId, gameId));
+                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(userId, gameId));
             }
             sendMessage("Borrado completado: favorito", response);
             Database.close();
