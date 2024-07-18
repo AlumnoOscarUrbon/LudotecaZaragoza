@@ -3,7 +3,6 @@
   <h3 align="center">Actividad de Aprendizaje 2ª Evaluación</h3>
   <p align="center">Alumno - Óscar Urbón Risueño</p>
   <p align="center">Programación - Curso 2023-2024</p>
-  <br />
 </div>
 
 ## Introducción
