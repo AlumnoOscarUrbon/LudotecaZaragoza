@@ -21,13 +21,14 @@ public class DeleteFavoriteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        String gameId = request.getParameter("gameId");
-        String userId = request.getParameter("sessionUserId");
+        int gameId = Integer.parseInt(request.getParameter("gameId"));
+        int userId = Integer.parseInt(request.getParameter("sessionUserId"));
         String favoriteId = request.getParameter("favoriteId");
         try {
             Database.connect();
             if (favoriteId != null ) {
-                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByFavId(favoriteId));
+                int favoriteIdInt = Integer.parseInt(favoriteId);
+                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByFavId(favoriteIdInt));
             } else {
                 Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(userId, gameId));
             }

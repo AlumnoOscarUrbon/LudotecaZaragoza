@@ -21,8 +21,8 @@ public class AddFavoriteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        String gameId = request.getParameter("gameId");
-        String userId = request.getParameter("sessionUserId");
+        int gameId = Integer.parseInt(request.getParameter("gameId"));
+        int userId = Integer.parseInt(request.getParameter("sessionUserId"));
 
         try {
             Database.connect();

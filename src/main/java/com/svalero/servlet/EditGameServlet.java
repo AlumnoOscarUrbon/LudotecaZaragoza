@@ -62,11 +62,12 @@ public class EditGameServlet extends HttpServlet {
                     sendMessage("Registro satisfactorio", response);
 
                 } else {
+                    int gameIdInt = Integer.parseInt(gameId);
                     if (picturePart.getSize() != 0) {
-                        Database.jdbi.withExtension(GameDao.class, dao -> dao.updateAllGame(gameName, gameCategoryId, gameDescription, gameRelease, finalFileName, gameId));
+                        Database.jdbi.withExtension(GameDao.class, dao -> dao.updateAllGame(gameName, gameCategoryId, gameDescription, gameRelease, finalFileName, gameIdInt));
                         sendMessage("Actualización satisfactoria", response);
                     } else {
-                        Database.jdbi.withExtension(GameDao.class, dao -> dao.updateGameNoImage(gameName, gameCategoryId, gameDescription, gameRelease, gameId));
+                        Database.jdbi.withExtension(GameDao.class, dao -> dao.updateGameNoImage(gameName, gameCategoryId, gameDescription, gameRelease, gameIdInt));
                         sendMessage("Actualización satisfactoria. La imagen no ha cambiado", response);
                     }
                 }

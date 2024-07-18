@@ -24,10 +24,10 @@ public interface UserDao {
 
 
     @SqlUpdate("UPDATE Users SET Username = ? , Email = ? , BirthDate = ? , Role = ? WHERE UserId = ? ")
-    int updateUserWOPassword(String username, String email, Date birthDate, String role, String userId);
+    int updateUserWOPassword(String username, String email, Date birthDate, String role, int userId);
 
     @SqlUpdate("UPDATE Users SET Username = ? , Email = ? , BirthDate = ? , Password = SHA1(?), Role = ? WHERE UserId = ? ")
-    int updateUserWithPassword(String username, String email, Date birthDate, String password, String role, String userId);
+    int updateUserWithPassword(String username, String email, Date birthDate, String password, String role, int userId);
 
     //Borrar todas las dependencias en una sola ejecución
     @Transaction

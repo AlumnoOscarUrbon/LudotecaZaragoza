@@ -21,8 +21,8 @@ public class AddSignUpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        String activityId = request.getParameter("activityId");
-        String userId = request.getParameter("sessionUserId");
+        int activityId = Integer.parseInt(request.getParameter("activityId"));
+        int userId = Integer.parseInt(request.getParameter("sessionUserId"));
 
         try {
             Database.connect();

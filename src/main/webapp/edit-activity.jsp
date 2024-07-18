@@ -11,6 +11,11 @@
     <%@ include file="includes/head.jsp"%>
     <body>
         <%@ include file="includes/header.jsp"%>
+        <%
+            if (!sessionUserRole.equals("admin")) {
+                response.sendRedirect("/LudotecaZaragoza");
+            }
+        %>
         <main>
             <%
                 String activityId;
@@ -131,5 +136,6 @@
                 });
             });
         </script>
+
     </body>
 </html>

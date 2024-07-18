@@ -28,10 +28,10 @@ public interface GameDao {
     int registerGame (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, String picture);
 
     @SqlUpdate ("UPDATE Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ? , Picture = ? WHERE GameId = ?")
-    int updateAllGame (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, String picture, String gameId);
+    int updateAllGame (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, String picture, int gameId);
 
     @SqlUpdate ("UPDATE Games  SET Name = ? , GameCategoryId = ? , Description = ? , ReleaseDate = ?  WHERE GameId = ?")
-    int updateGameNoImage (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, String gameId);
+    int updateGameNoImage (String gameName, int gameCategoryId, String gameDescription, LocalDate gameRelease, int gameId);
 
     @Transaction
     default void deleteGameWithDependencies(int gameId) {

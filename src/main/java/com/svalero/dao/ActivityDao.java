@@ -28,10 +28,10 @@ public interface ActivityDao {
     int registerActivity (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, String picture);
 
     @SqlUpdate ("UPDATE Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ActivityStart = ? , Picture = ? WHERE ActivityId = ?")
-    int updateAllActivity (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, String picture, String activityId);
+    int updateAllActivity (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, String picture, int activityId);
 
     @SqlUpdate ("UPDATE Activities  SET Name = ? , ActivityCategoryId = ? , Description = ? , ActivityStart = ?  WHERE ActivityId = ?")
-    int updateActivityNoImage (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, String activityId);
+    int updateActivityNoImage (String activityName, int activityCategoryId, String activityDescription, LocalDateTime activityStart, int activityId);
 
     @Transaction
     default void deleteActivityWithDependencies(int activityId) {

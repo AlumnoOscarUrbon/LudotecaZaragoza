@@ -4,6 +4,8 @@
 <%@ page import="com.svalero.domain.*" %>
 <%@ page import="static com.svalero.util.Utils.formatDateTimeToDate" %>
 <%@ page import="static com.svalero.util.Utils.*" %>
+<%@ page import="java.time.Duration" %>
+<%@ page import="java.time.LocalDateTime" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 
@@ -105,8 +107,17 @@
                         <%
                            String activityDate = formatDateTimeToDate(currentActivity.getActivityDateTime());
                            String activityTime = formatLocalTimeNoSec(currentActivity.getActivityDateTime());
+                           Duration duration = Duration.between(LocalDateTime.now(), currentActivity.getActivityDateTime());
+                           if (duration.isPositive()){
                         %>
                         <p class="lead my-2 mx-3">Esta actividad de <b><%= currentActivity.getActivityCategory().getName() %></b> comenzará el <b><%= activityDate %></b> a las <b><%= activityTime %></b></p>
+                        <%
+                            } else {
+                        %>
+                        <p class="lead my-2 mx-3">Esta actividad ya ha <b>terminado</b>.</p>
+                        <%
+                            }
+                        %>
                         <hr>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-auto" >
                             <%
@@ -115,7 +126,7 @@
                             <a href="edit-activity.jsp?currentActivityId=<%= currentActivity.getActivityId() %>">
                                 <button type="button" class="btn btn-primary btn-lg px-4 w-100 w-md-auto fw-bold">Editar</button>
                             </a>
-                                <button type="button" class="btn btn-danger btn-delete btn-lg px-4 w-100 w-md-auto fw-bold" data-current-activity-id="<%= currentActivity.getActivityId() %>">Eliminar</button>
+                            <button type="button" class="btn btn-danger btn-lg px-4 w-100 w-md-auto fw-bold" data-bs-toggle="modal" data-bs-target="#Delete-Modal-<%=currentActivity.getActivityId()%>">Eliminar</button>
                             <%
                                 }
                             %>
@@ -134,12 +145,30 @@
                         </div>
                     </div>
                 </div>
+                <!-- Modal confirmacion borrado -->
+                <div class="modal fade" id="Delete-Modal-<%= currentActivity.getActivityId() %>" tabindex="-1" aria-labelledby="DeleteModalLabel-<%= currentActivity.getActivityId() %>" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-top-third">
+                        <div class="modal-content p-3 white95 center&cover-bg" style="background-image: url('icons/stripes.jpg');">
+                            <div class="modal-header d-flex justify-content-between">
+                                <h2 class="fs-4 mb-0" id="SignInModalLabel">Eliminar permanentemente</h2>
+                                <button type="button" class="btn-close bclose-corner" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body mx-3 d-flex flex-column justify-content-center align-items-center">
+                                <h2 class="border-bottom mb-4"><b><%= currentActivity.getName() %></b></h2>
+                                <button class="btn btn-delete btn-danger w-50 text-center p-3" type="submit" data-current-activity-id="<%= currentActivity.getActivityId() %>"
+                                        data-bs-dismiss="modal">CONFIRMAR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <%
                     }
                 }
             %>
         </main>
+
         <%@ include file="includes/footer.jsp"%>
 
         <!-- Desplegable Seleccion de categoria-->
@@ -232,5 +261,6 @@
                 });
             });
         </script>
+
     </body>
 </html>

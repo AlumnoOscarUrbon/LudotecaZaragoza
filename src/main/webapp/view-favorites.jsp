@@ -11,6 +11,11 @@
     <%@ include file="includes/head.jsp"%>
     <body>
         <%@ include file="includes/header.jsp"%>
+        <%
+            if (sessionUserId.equals("noId")) {
+                response.sendRedirect("/LudotecaZaragoza");
+            }
+        %>
         <main>
             <div class="container">
                 <div class="container my-4">
@@ -111,7 +116,7 @@
                         url: "delete-favorite",
                         data: {favoriteId: currentFavoriteId},
                         success: function() {
-                            favItem.animate({ opacity: 0 }, 600, function() {
+                            favItem.animate({ opacity: 0 }, 300, function() {
                                 favItem.remove();
                             });
                         },

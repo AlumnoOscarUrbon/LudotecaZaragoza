@@ -56,7 +56,6 @@
                 </div>
             </div>
 
-
             <%
                 String search = request.getParameter("search");
                 if (search == null) {
@@ -114,7 +113,7 @@
                             <a href="edit-game.jsp?currentGameId=<%= currentGame.getGameId() %>">
                                 <button type="button" class="btn btn-primary btn-lg px-4 w-100 w-md-auto fw-bold">Editar</button>
                             </a>
-                            <button type="button" class="btn btn-danger btn-delete btn-lg px-4 w-100 w-md-auto fw-bold" data-current-game-id="<%= currentGame.getGameId() %>">Eliminar</button>
+                            <button type="button" class="btn btn-danger btn-lg px-4 w-100 w-md-auto fw-bold" data-bs-toggle="modal" data-bs-target="#Delete-Modal-<%=currentGame.getGameId()%>">Eliminar</button>
                             <%
                                 }
                             %>
@@ -133,13 +132,29 @@
                         </div>
                     </div>
                 </div>
+                <!-- Modal confirmacion borrado -->
+                <div class="modal fade" id="Delete-Modal-<%= currentGame.getGameId() %>" tabindex="-1" aria-labelledby="DeleteModalLabel-<%= currentGame.getGameId() %>" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-top-third">
+                        <div class="modal-content p-3 white95 center&cover-bg" style="background-image: url('icons/stripes.jpg');">
+                            <div class="modal-header d-flex justify-content-between">
+                                <h2 class="fs-4 mb-0" id="SignInModalLabel">Eliminar permanentemente</h2>
+                                <button type="button" class="btn-close bclose-corner" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body mx-3 d-flex flex-column justify-content-center align-items-center">
+                                <h2 class="border-bottom mb-4"><b><%= currentGame.getName() %></b></h2>
+                                <button class="btn btn-delete btn-danger w-50 text-center p-3" type="submit" data-current-game-id="<%= currentGame.getGameId() %>"
+                                    data-bs-dismiss="modal">CONFIRMAR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <%
                     }
                 }
             %>
         </main>
-
         <%@ include file="includes/footer.jsp"%>
 
         <!-- Desplegable Seleccion de categoria-->
@@ -167,8 +182,7 @@
         <!-- Eliminacion tarjetas-->
         <script type="text/javascript">
             $(document).ready(function() {
-                $(".btn-delete").on("click", function(event) {
-                    event.preventDefault();
+                $(".btn-delete").on("click", function() {
                     var currentGameId = $(this).data('current-game-id');
                     var card = $("#card" + currentGameId);
 
@@ -232,5 +246,6 @@
                 });
             });
         </script>
+
     </body>
 </html>

@@ -15,13 +15,13 @@ public interface SignUpDao {
     SignUp getSignUpsFromUserAndActivity(String userId, String signUpId);
 
     @SqlUpdate("INSERT INTO SignUps  SET UserId = ? , ActivityId = ? ")
-    void addSignUp(String userId, String activityId);
+    void addSignUp(int userId, int activityId);
 
     @SqlUpdate("DELETE FROM SignUps WHERE UserId = ? AND ActivityId = ?")
-    void deleteSignUpByActivityId(String userId, String activityId);
+    void deleteSignUpByActivityId(int userId, int activityId);
 
     @SqlUpdate("DELETE FROM SignUps WHERE SignUpId = ?")
-    void deleteSignUpBySignUpId(String signUpId);
+    void deleteSignUpBySignUpId(int signUpId);
 
     @SqlQuery("SELECT s.* " +
             "FROM SignUps s " +

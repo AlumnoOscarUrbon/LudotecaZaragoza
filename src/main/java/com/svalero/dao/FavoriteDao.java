@@ -15,13 +15,13 @@ public interface FavoriteDao {
     Favorite getFavoritesFromUserAndGame(String userId, String favoriteId);
 
     @SqlUpdate("INSERT INTO Favorites  SET UserId = ? , GameId = ? ")
-    void addFavorite (String userId, String gameId);
+    void addFavorite (int userId, int gameId);
 
     @SqlUpdate ("DELETE FROM Favorites WHERE UserId = ? AND GameId = ?")
-    void deleteFavoriteByGameId (String userId, String gameId);
+    void deleteFavoriteByGameId (int userId, int gameId);
 
     @SqlUpdate ("DELETE FROM Favorites WHERE FavoriteId = ?")
-    void deleteFavoriteByFavId (String favoriteId);
+    void deleteFavoriteByFavId (int favoriteId);
 
     @SqlQuery("SELECT f.* " +
             "FROM Favorites f " +

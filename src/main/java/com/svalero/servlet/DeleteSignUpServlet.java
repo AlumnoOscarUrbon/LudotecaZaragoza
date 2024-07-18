@@ -21,13 +21,14 @@ public class DeleteSignUpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        String activityId = request.getParameter("activityId");
-        String userId = request.getParameter("sessionUserId");
+        int activityId = Integer.parseInt(request.getParameter("activityId"));
+        int userId = Integer.parseInt(request.getParameter("sessionUserId"));
         String signUpId = request.getParameter("signUpId");
         try {
             Database.connect();
             if (signUpId != null ) {
-                Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpBySignUpId(signUpId));
+                int signUpIdInt = Integer.parseInt(signUpId);
+                Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpBySignUpId(signUpIdInt));
             } else {
                 Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpByActivityId(userId, activityId));
             }

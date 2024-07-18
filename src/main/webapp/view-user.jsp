@@ -9,7 +9,7 @@
 <html lang="es">
     <%@ include file="includes/head.jsp"%>
     <body>
-        <%@ include file="includes/header.jsp"%>
+    <%@ include file="includes/header.jsp"%>
         <main>
             <div class="container my-3">
                 <%
@@ -210,5 +210,6 @@
                 });
             });
         </script>
+
     </body>
 </html>

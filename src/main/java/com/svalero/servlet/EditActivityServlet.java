@@ -68,11 +68,12 @@ public class EditActivityServlet extends HttpServlet {
                     sendMessage("Registro satisfactorio", response);
 
                 } else {
+                    int activityIdInt = Integer.parseInt(activityId);
                     if (picturePart.getSize() != 0) {
-                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateAllActivity(activityName, activityCategoryId, activityDescription, activityStart, finalFileName, activityId));
+                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateAllActivity(activityName, activityCategoryId, activityDescription, activityStart, finalFileName, activityIdInt));
                         sendMessage("Actualización satisfactoria", response);
                     } else {
-                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateActivityNoImage(activityName, activityCategoryId, activityDescription, activityStart, activityId));
+                        Database.jdbi.withExtension(ActivityDao.class, dao -> dao.updateActivityNoImage(activityName, activityCategoryId, activityDescription, activityStart, activityIdInt));
                         sendMessage("Actualización satisfactoria. La imagen no ha cambiado", response);
                     }
                 }
@@ -105,6 +106,7 @@ public class EditActivityServlet extends HttpServlet {
             sendError("Debe ingresar una categoria",response);
             hasErrors=false;
         }
+
        try {
            LocalTime activityTime =  parseLocalTime(request.getParameter("activityTime"));
        } catch (DateTimeParseException e) {
@@ -113,6 +115,10 @@ public class EditActivityServlet extends HttpServlet {
        }
         try {
             LocalDate activityDate = parseLocalDate(request.getParameter("activityDate"));
+            if ( activityDate.isBefore(LocalDate.now()) || activityDate.isEqual(LocalDate.now())) {
+                sendError("La fecha de comienzo debe ser futura", response);
+                hasErrors=false;
+            }
         } catch (DateTimeParseException e) {
             sendError("Formato de la fecha incorrecto", response);
             hasErrors=false;

@@ -42,37 +42,34 @@ public class EditUserServlet extends HttpServlet {
                 HttpSession session = request.getSession();
 
                 Database.connect();
-
                 System.out.println("Conexion abierta");
+                //Registro nuevo usuario
                 if (userId.equals("noId")) {
                     if (validatePassword(request, response)) {
                         Database.jdbi.withExtension(UserDao.class, dao -> dao.registerUser(username, email, birthDate, password, role));
 
                         User userForLogin = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUser(username, password));
 
-                        session.setAttribute("role", userForLogin.getRole());
                         session.setAttribute("id", userForLogin.getUserId());
+                        session.setAttribute("role", userForLogin.getRole());
                         sendMessage("Registro satisfactorio", response);
                     }
-
+                //Actualizar usuario
                 } else {
-                    if (password.isBlank()) {
-                        Database.jdbi.withExtension(UserDao.class, dao -> dao.updateUserWOPassword(username, email, birthDate, role, userId));
+                    int userIdInt = Integer.parseInt(userId);
 
-                        if (session.getAttribute("id").equals(userId)) {
-                            session.setAttribute("role", role );
-                            session.setAttribute("id", userId);
-                        }
+                    if (password.isBlank()) {
+                        Database.jdbi.withExtension(UserDao.class, dao -> dao.updateUserWOPassword(username, email, birthDate, role, userIdInt));
                         sendMessage("Datos actualizados correctamente. La contraseña no ha cambiado.", response);
 
                     } else {
-                            Database.jdbi.withExtension(UserDao.class, dao -> dao.updateUserWithPassword(username, email, birthDate, password, role, userId));
-
-                        if (session.getAttribute("id").equals(userId)) {
-                            session.setAttribute("role", role );
-                            session.setAttribute("id", userId);
-                        }
+                        Database.jdbi.withExtension(UserDao.class, dao -> dao.updateUserWithPassword(username, email, birthDate, password, role, userIdInt));
                         sendMessage("Datos actualizados correctamente.", response);
+                    }
+                    //Actualizar datos de sesion en caso de que se hayan modificado
+                    if (session.getAttribute("id").equals(userId)) {
+                        session.setAttribute("role", role );
+                        session.setAttribute("id", userId);
                     }
                 }
                 Database.close();

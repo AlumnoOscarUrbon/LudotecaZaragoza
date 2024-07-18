@@ -5,12 +5,20 @@
 <%@ page import="static com.svalero.util.Utils.formatDateTimeToDate" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="static com.svalero.util.Utils.formatLocalTimeNoSec" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.Period" %>
+<%@ page import="java.time.Duration" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="es">
     <%@ include file="includes/head.jsp"%>
     <body>
         <%@ include file="includes/header.jsp"%>
+        <%
+            if (sessionUserId.equals("noId")) {
+                response.sendRedirect("/LudotecaZaragoza");
+            }
+        %>
         <main>
             <div class="container">
                 <div class="container my-4">
@@ -72,10 +80,17 @@
                             </div>
                             <div class="col-6 d-flex justify-content-center mx-2">
                                 <%
-                                    String startDate = formatDateTimeToDate(currentSignUp.getActivityFav().getActivityDateTime());
-                                    String startTime = formatLocalTimeNoSec(currentSignUp.getActivityFav().getActivityDateTime());
+                                    Duration duration = Duration.between(LocalDateTime.now(), currentSignUp.getActivityFav().getActivityDateTime());
+                                    if (duration.isPositive()){
                                 %>
-                                <p>Actividad de <b><%= currentSignUp.getActivityFav().getActivityCategory().getName() %></b> que comenzará el <b><%= startDate %></b> a las <b><%= startTime %></b></p>
+                                <p>Faltan <b><%= duration.toDaysPart() %></b> dias, <b><%= duration.toHoursPart() %></b> horas y <b><%= duration.toMinutesPart() %></b> minutos para que comience.</p>
+                                <%
+                                    } else {
+                                %>
+                                <p>Esta actividad ya ha <b>terminado</b>.</p>
+                                <%
+                                    }
+                                %>
                             </div>
                             <div class="col-3 d-flex justify-content-end pe-3">
                                 <a href="delete-sign-up" class="delete-signup-button" data-signup-id="<%=currentSignUp.getSignUpId()%>">
@@ -110,7 +125,7 @@
                         url: "delete-sign-up",
                         data: {signUpId: currentSignUpId},
                         success: function() {
-                            signUpItem.animate({ opacity: 0 }, 600, function() {
+                            signUpItem.animate({ opacity: 0 }, 300, function() {
                                 signUpItem.remove();
                             });
                         },
