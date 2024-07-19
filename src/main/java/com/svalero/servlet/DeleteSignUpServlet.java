@@ -21,8 +21,8 @@ public class DeleteSignUpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        int activityId = Integer.parseInt(request.getParameter("activityId"));
-        int userId = Integer.parseInt(request.getParameter("sessionUserId"));
+        String activityId = request.getParameter("activityId");
+        String userId = request.getParameter("sessionUserId");
         String signUpId = request.getParameter("signUpId");
         try {
             Database.connect();
@@ -30,7 +30,9 @@ public class DeleteSignUpServlet extends HttpServlet {
                 int signUpIdInt = Integer.parseInt(signUpId);
                 Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpBySignUpId(signUpIdInt));
             } else {
-                Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpByActivityId(userId, activityId));
+                int finalUserId = Integer.parseInt(userId);
+                int finalActivityId = Integer.parseInt(activityId);
+                Database.jdbi.useExtension(SignUpDao.class, dao -> dao.deleteSignUpByActivityId(finalUserId, finalActivityId));
             }
             sendMessage("Borrado completado: sign up", response);
             Database.close();

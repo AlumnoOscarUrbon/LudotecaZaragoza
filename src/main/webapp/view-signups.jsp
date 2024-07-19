@@ -2,11 +2,8 @@
 <%@ page import="java.util.Comparator" %>
 <%@ page import="com.svalero.domain.SignUp" %>
 <%@ page import="com.svalero.dao.SignUpDao" %>
-<%@ page import="static com.svalero.util.Utils.formatDateTimeToDate" %>
 <%@ page import="java.util.Collections" %>
-<%@ page import="static com.svalero.util.Utils.formatLocalTimeNoSec" %>
 <%@ page import="java.time.LocalDateTime" %>
-<%@ page import="java.time.Period" %>
 <%@ page import="java.time.Duration" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
@@ -125,7 +122,7 @@
                         url: "delete-sign-up",
                         data: {signUpId: currentSignUpId},
                         success: function() {
-                            signUpItem.animate({ opacity: 0 }, 300, function() {
+                            signUpItem.animate({ opacity: 0 }, 400, function() {
                                 signUpItem.remove();
                             });
                         },

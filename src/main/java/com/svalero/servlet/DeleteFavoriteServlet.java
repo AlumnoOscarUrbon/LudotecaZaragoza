@@ -21,16 +21,18 @@ public class DeleteFavoriteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        int gameId = Integer.parseInt(request.getParameter("gameId"));
-        int userId = Integer.parseInt(request.getParameter("sessionUserId"));
+        String gameId = request.getParameter("gameId");
+        String userId = request.getParameter("sessionUserId");
         String favoriteId = request.getParameter("favoriteId");
         try {
             Database.connect();
             if (favoriteId != null ) {
-                int favoriteIdInt = Integer.parseInt(favoriteId);
-                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByFavId(favoriteIdInt));
+                int FavoriteIdInt = Integer.parseInt(favoriteId);
+                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByFavId(FavoriteIdInt));
             } else {
-                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(userId, gameId));
+                int GameIdInt = Integer.parseInt(gameId);
+                int UserIdInt = Integer.parseInt(userId);
+                Database.jdbi.useExtension(FavoriteDao.class, dao -> dao.deleteFavoriteByGameId(UserIdInt, GameIdInt));
             }
             sendMessage("Borrado completado: favorito", response);
             Database.close();
@@ -40,5 +42,6 @@ public class DeleteFavoriteServlet extends HttpServlet {
             sendError("Error en la BBDD.", response);
             throw new RuntimeException(e);
         }
+
     }
 }

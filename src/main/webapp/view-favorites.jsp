@@ -73,9 +73,8 @@
                         <div class="media-body d-flex align-items-center border-bottom border-gray" >
                             <div class="col-3 d-flex justify-content-start mb-3">
                                 <a href="view-game.jsp?currentGameId=<%= currentFavorite.getGameFav().getGameId() %>">
-                                    <strong>
-                                        <%= currentFavorite.getGameFav().getName() %>
-                                    </strong></a>
+                                    <strong><%= currentFavorite.getGameFav().getName() %></strong>
+                                </a>
                             </div>
                             <div class="col-6 d-flex justify-content-center mx-2">
                             <%
@@ -85,12 +84,11 @@
                                 <p><b><%= currentFavorite.getGameFav().getGameCategory().getName() %></b> añadido a favoritos el <b><%= regDate %></b> a las <b><%= regTime %></b></p>
                             </div>
                             <div class="col-3 d-flex justify-content-end pe-3">
-                                <a href="delete-favorite" class="delete-favorite-button" data-favorite-id="<%=currentFavorite.getFavoriteId()%>">
+                                <a href="delete-favorite" class="delete-favorite-button" data-favorite-id="<%= currentFavorite.getFavoriteId() %>" >
                                     <img src="icons/trash.svg" alt="Trash icon" width="30" height="24">
                                 </a>
                             </div>
                         </div>
-                        <div id="result-reg-<%=currentFavorite.getFavoriteId()%>"></div>
                     </div>
                 <%
                     }
@@ -116,7 +114,7 @@
                         url: "delete-favorite",
                         data: {favoriteId: currentFavoriteId},
                         success: function() {
-                            favItem.animate({ opacity: 0 }, 300, function() {
+                            favItem.animate({ opacity: 0 }, 400, function() {
                                 favItem.remove();
                             });
                         },
